@@ -7,6 +7,8 @@
 
 ## Weekly Schedule
 
+The following schedule repeats every week across the full duration of the internship.
+
 | Day | Working Hours (IST) | Location |
 |-----|-------------------|----------|
 | Monday | 10:00 AM – 2:00 PM | Remote (Home) |
