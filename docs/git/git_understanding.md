@@ -85,3 +85,89 @@ The alternative, where everyone working directly on `main` does not eliminate co
 ## Practical Task
 
 ![TASK#43](../../assets/onboarding/Screenshot%202026-05-22%20at%2010.21.21 AM.png)
+
+## Writing Meaningful Commit Messages
+
+### What Makes a Good Commit Message?
+
+The most widely adopted convention for commit messages is the [Conventional Commits](https://www.conventionalcommits.org) specification, which structures messages as:
+
+<pre>
+<b>&lt;type&gt;</b>(<b>&lt;optional scope&gt;</b>)<b>&lt;!&gt;</b>: <b>&lt;short description&gt;</b>
+<sub>empty line as separator</sub>
+<b>&lt;optional body&gt;</b>
+<sub>empty line as separator</sub>
+<b>&lt;optional footer&gt;</b>
+</pre>
+
+The `!` is optional and denotes a breaking change, i.e, a change that is incompatible with the previous version and requires consumers to update their code. For example: `feat(api)!: remove deprecated /v1/users endpoint`. Breaking changes can also be documented in the footer using `BREAKING CHANGE: <description>`, or both.
+
+Common types: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`, `style`, `perf`, `ci`.
+
+A good commit message:
+- Has a subject line under 72 characters
+- Uses the imperative mood ("add feature" not "added feature")
+- Clearly states what changed and why, not how
+- Is scoped to a single logical change
+- Would make sense to someone reading the history six months later with no other context
+
+A commit message is not a description of what you did while writing the code. It is a description of what the codebase now does that it did not before.
+
+### How Does a Clear Commit Message Help in Team Collaboration?
+
+Commit history is the project's changelog, audit trail, and debugging tool all at once. Clear commit messages make several things significantly easier:
+
+- **CI/CD automation:** Many pipelines parse commit messages to determine release behavior. Conventional Commits (or any consistent convention) allows tools like `semantic-release` to automatically determine version bumps (major/minor/patch), generate changelogs, and trigger deployments based on commit type. A `feat:` commit bumps a minor version, a `fix:` bumps a patch, a `feat!:` or `BREAKING CHANGE:` bumps a major. This only works if commit messages are structured and consistent.
+- **Bisecting:** `git bisect` works by checking out commits and testing them. If commit messages are meaningful, you can often find the culprit just by reading the log without running the code.
+- **Blame:** `git blame` shows who changed each line and in which commit. A meaningful commit message tells you *why* that line exists, which is often more valuable than knowing who wrote it.
+- **Reverting:** If a commit needs to be reverted, a clear message tells you immediately what the impact of reverting will be, without having to read the diff.
+- **Code review:** A well-scoped commit with a clear message makes the reviewer's job easier, since they know what to look for and what the intent is (since you are reading this, yes, this commit is doing exactly that for you).
+- **Onboarding:** New team members can understand the evolution of the codebase by reading the history, but only if the history is readable.
+
+### How Can Poor Commit Messages Cause Issues Later?
+
+Poor commit messages like "fixed stuff", "wip", "changes", "update", etc. are essentially noise in the history. They force anyone debugging or auditing to read the full diff of every commit to understand what changed and why, which is exactly the work that a good commit message should eliminate.
+
+More specifically:
+- **CI/CD pipelines break down:** If your pipeline relies on commit message conventions to determine versioning or trigger specific workflows, vague messages like "fixed stuff" either cause the pipeline to make wrong decisions or fall back to defaults, potentially shipping a patch version when a breaking change was introduced, or failing to generate accurate release notes entirely.
+- **Bisecting becomes guesswork.** Without meaningful messages you cannot narrow down which commit introduced a bug without running each one.
+- **Reverting becomes risky.** "fixed stuff" tells you nothing about what reverting will break.
+- **Fixup and squash workflows break down.** Tools like `git rebase --autosquash` rely on commit message conventions (`fixup!`, `squash!`) to work correctly. Vague messages make this impossible to use effectively.
+- **Accountability is lost.** In a team, you want to be able to understand not just what changed but why it was decided. Poor messages erase that context permanently.
+
+A commit message cannot be retroactively improved once it is in shared history without rewriting history, which is disruptive in a team context. The cost of writing a good message upfront is seconds. The cost of a bad one compounds indefinitely.
+
+### Real-World Example: React's Commit History
+
+| **React Commit History** |
+| :----------------------: |
+| ![React Commits](../../assets/onboarding/React%20Commits.jpeg) |
+| *React's commit history as a reference to analyze good vs bad commit messages* |
+
+React's commit history is a good real-world reference. The Facebook/Meta team uses a `[scope] description` convention rather than Conventional Commits strictly, but the commits are consistent, human-readable, and machine-parseable enough for their tooling.
+
+**Good examples from React's history:**
+
+- `[compiler] Don't emit spurious import { c as _c } for discarded functions`: scoped, specific, explains exactly what changed and why
+- `[Fizz] prevent reentrant finishedTask from calling completeAll multiple times` : precise, explains the race condition being fixed
+- `fix[describeClassComponentFrame]: invoke constructor with new keyword`: scoped to a specific function, clear imperative action
+
+**Mediocre examples:**
+
+- `Fix FragmentInstance listener leak: normalize boolean vs object capture options per DOM spec`: describes the bug, the fix, and references the standard it aligns with, but doesn't follow React's convention
+- `[ephr] Update changelog for 7.1.0`: acceptable but mechanical, carries no information about what changed in 7.1.0
+
+**Bad examples:**
+- `Fix formatting`: no scope, no context, could mean anything in any file
+
+#### Key takeaway
+
+React doesn't follow Conventional Commits strictly: and that is fine. The important
+thing is consistency within a project and clarity for both humans and tooling. A team
+that consistently uses `[scope] description` is more readable than one that
+inconsistently follows any formal spec. The optimal commit message is one that is
+clear, consistently structured, and parseable by both humans and CI/CD pipelines.
+
+### Practical Task
+
+![TASK#46](../../assets/onboarding/Screenshot%202026-05-22%20at%201.24.42 PM.png)
