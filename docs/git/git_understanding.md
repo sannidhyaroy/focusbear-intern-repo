@@ -80,3 +80,60 @@ exactly what it should.
 ## Practical Task
 
 ![TASK#42](../../assets/onboarding/Screenshot%202026-05-22%20at%209.16.46 AM.png)
+
+# Branching & Team Collaboration
+
+## Why is Pushing Directly to Main Problematic?
+
+`main` (or `master`) represents the canonical, stable state of the project. Pushing
+directly to it means every change, finished or not, reviewed or not, immediately
+becomes part of that canonical state. In a team context this is problematic for
+several reasons:
+
+- There is no review gate. Broken code, unfinished features, or accidental changes
+  go straight into the shared baseline that everyone else is working from.
+- It makes it harder to revert. If something goes wrong, unpicking a direct push
+  from `main` is messier than simply closing a PR or deleting a branch.
+- It creates race conditions. Two people pushing to `main` simultaneously can
+  overwrite each other's work or create a chaotic merge situation with no clear
+  resolution path.
+- CI/CD pipelines typically trigger on `main`. A bad direct push can break
+  deployments or trigger incorrect releases.
+
+Even on solo projects, pushing directly to `main` is a habit worth avoiding.
+Future collaborators, or future you, will thank you for it.
+
+## How Do Branches Help with Reviewing Code?
+
+Branches isolate work. When a change lives on a branch, it can be reviewed,
+tested, and discussed independently before it affects anyone else. A pull request
+against `main` (or `master`) creates a structured opportunity to:
+
+- Read the diff in context before it merges
+- Run automated checks (tests, linters, CI) against the change in isolation
+- Leave inline comments on specific lines
+- Request changes or approve
+
+This is fundamentally different from reviewing code after it has already been
+merged. Pre-merge review catches problems while they are still cheap to fix.
+
+**NOTE:** _This describes the pull request/merge request model common on platforms like GitHub and GitLab. Other workflows exist, like Gerrit reviews individual commits rather than branches, and git's original workflow uses emailed patches via `git format-patch` and `git am` (the kernel still works this way). The branch/PR model is dominant in modern team workflows, but is not the only valid approach._
+
+## What Happens if Two People Edit the Same File on Different Branches?
+
+Git handles this through merging. If the edits are in different parts of the file,
+Git can often merge them automatically. If the edits overlap, i.e, both people changed
+the same lines, git produces a merge conflict and requires a human to resolve it.
+
+Conflicts are not a failure of git. These are git correctly identifying that two
+independent changes cannot be automatically reconciled and need human judgment.
+The branch model makes conflicts manageable by isolating them to the merge point
+rather than letting them accumulate silently in a shared working state.
+
+The alternative, where everyone working directly on `main` does not eliminate
+conflicts, it just makes them harder to detect and resolve because there is no
+clear boundary between whose change is whose.
+
+## Practical Task
+
+![TASK#43](../../assets/onboarding/Screenshot%202026-05-22%20at%2010.21.21 AM.png)
