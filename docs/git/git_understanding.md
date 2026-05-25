@@ -268,3 +268,57 @@ A well-structured pull request (PR) has:
 All issues in this milestone have been submitted and merged via PRs on the intern repo, each with a descriptive title, body, and link to the related issue. This document itself will be merged via a PR linked to this issue, a self-referential proof that the task is being completed as intended.
 
 For the full review-approve-merge cycle, [Wayfinder PR #445](https://github.com/OneBusAway/wayfinder/pull/445) is a real example from my open-source contributions, which was submitted to the Wayfinder project, reviewed by the project maintainer, approved, and merged. That is the complete PR lifecycle demonstrated in an actual team context outside of this internship.
+
+# Debugging with `git bisect`
+
+## What Does `git bisect` Do?
+
+`git bisect` is a debugging tool that uses binary search to find which commit introduced a bug. Instead of manually checking commits one by one, Git halves the search space with each step, making it logarithmically faster than linear search.
+
+The workflow:
+
+```bash
+git bisect start
+git bisect bad                  # current commit has the bug
+git bisect good <commit-hash>   # this commit was known to be clean
+```
+
+Git then checks out the midpoint commit. You test it and tell Git the result:
+
+```bash
+git bisect good   # bug not present here
+git bisect bad    # bug present here
+```
+
+Git keeps halving the range until it identifies the exact commit that introduced the bug. When done:
+
+```bash
+git bisect reset  # return to original HEAD
+```
+
+With `git bisect run <script>`, the entire process can be automated. Git runs your test script at each step and uses the exit code to determine good or bad automatically.
+
+## When Would You Use It in a Real-World Debugging Situation?
+
+The classic scenario: a bug exists in the current version that didn't exist in a previous release, but you don't know which of the hundreds of commits between them introduced it. Manual review would take hours. Bisect finds it in `log₂(n)` steps for 1000 commits, that's at most 10 steps.
+
+Specific situations:
+
+- **Regression bugs:** Something worked in v1.2 but is broken in v1.5. You know the good commit (v1.2 tag) and the bad commit (HEAD). Bisect finds the culprit in minutes.
+- **Performance regressions:** Combined with a benchmark script and `git bisect run`, you can automatically find which commit caused a slowdown without manual intervention.
+- **Flaky test introduction:** If a test started failing intermittently, bisect can find when it was introduced even if reproducing it is probabilistic.
+- **Combined with `git blame`:** Blame tells you who changed a line and in which commit. Bisect tells you which commit broke behavior. Together they give the full picture.
+
+## How Does It Compare to Manually Reviewing Commits?
+
+Manual review is `O(n)`, you check commits one by one until you find the problem. For 10 commits this is fine. For 100 it is tedious. For 1000 it is impractical.
+
+Bisect is `O(log n)`, so each step eliminates half the remaining candidates. 1000 commits is 10 steps. 1,000,000 commits is 20 steps.
+
+More importantly, manual review requires you to understand each commit's intent and reason about whether it could have caused the bug. Bisect requires only a reliable way to reproduce the bug — the reasoning is replaced by binary search. This is especially valuable when the bug is subtle or the codebase is unfamiliar.
+
+The limitation of bisect is that it requires a reproducible test condition. If you cannot reliably determine whether a given commit is good or bad, bisect cannot help. It also finds the first bad commit, not necessarily the root cause. The actual bug may have been introduced by a dependency change or an implicit assumption that was violated by a seemingly unrelated commit.
+
+## Practical Task
+
+![TASK#45](../../assets/onboarding/Screenshot%202026-05-26%20at%201.32.32 AM.png)
