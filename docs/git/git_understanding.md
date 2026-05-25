@@ -171,3 +171,46 @@ clear, consistently structured, and parseable by both humans and CI/CD pipelines
 ### Practical Task
 
 ![TASK#46](../../assets/onboarding/Screenshot%202026-05-22%20at%201.24.42 PM.png)
+
+
+## Merge Conflicts & Conflict Resolution
+
+### What Causes Merge Conflicts?
+
+A merge conflict occurs when Git cannot automatically reconcile differences between two branches. This happens when:
+
+- Two branches have edited the same lines in the same file differently
+- One branch has deleted a file that another branch has modified
+- Two branches have added different content at the same position in a file
+
+Git is actually quite good at merging automatically. It handles changes in different parts of the same file without conflict. Conflicts only arise when the same region of a file has diverged in incompatible ways, and Git genuinely cannot determine which version to keep without human judgment.
+
+### How Git Marks Conflicts
+
+When a conflict occurs, Git marks the affected file with conflict markers:
+
+```
+<<<<<<< HEAD
+<content from the current branch>
+=======
+<content from the branch being merged>
+>>>>>>> branch-name
+```
+
+Everything between `<<<<<<< HEAD` and `=======` is what the current branch had. Everything between `=======` and `>>>>>>> branch-name` is what the incoming branch had. You resolve the conflict by editing the file to the correct final state and removing the markers entirely.
+
+### How I Reproduced and Resolved the Conflict
+
+![TASK#60](../../assets/onboarding/Screenshot%202026-05-25%20at%2011.18.57 AM.png)
+
+### What I Learned
+
+A few things worth noting beyond the mechanics:
+
+**Conflicts are not failures:** They are Git correctly identifying ambiguity that requires human judgment. The branching model makes conflicts manageable, without branches, the same divergence would happen silently in a shared working directory with no structured resolution path.
+
+**Prevention is better than resolution:** Long-lived branches that diverge significantly from main are the primary source of painful conflicts. Short-lived feature branches that are merged or rebased frequently are much less likely to produce conflicts, and when they do the conflicts are smaller and easier to resolve.
+
+**Rebase vs merge for conflict resolution:** Merging creates a merge commit that preserves the full branch history. Rebasing replays commits from the feature branch on top of main, producing a linear history but rewriting commit hashes. For shared branches, rebase should be used carefully. For local feature branches, rebase before merging keeps the history clean.
+
+**`git rerere` (reuse recorded resolution):** if you resolve the same conflict multiple times (common during long rebases), Git can remember your resolution and apply it automatically in future. Worth knowing exists even if not used daily.
