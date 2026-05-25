@@ -86,9 +86,9 @@ The alternative, where everyone working directly on `main` does not eliminate co
 
 ![TASK#43](../../assets/onboarding/Screenshot%202026-05-22%20at%2010.21.21 AM.png)
 
-## Writing Meaningful Commit Messages
+# Writing Meaningful Commit Messages
 
-### What Makes a Good Commit Message?
+## What Makes a Good Commit Message?
 
 The most widely adopted convention for commit messages is the [Conventional Commits](https://www.conventionalcommits.org) specification, which structures messages as:
 
@@ -113,7 +113,7 @@ A good commit message:
 
 A commit message is not a description of what you did while writing the code. It is a description of what the codebase now does that it did not before.
 
-### How Does a Clear Commit Message Help in Team Collaboration?
+## How Does a Clear Commit Message Help in Team Collaboration?
 
 Commit history is the project's changelog, audit trail, and debugging tool all at once. Clear commit messages make several things significantly easier:
 
@@ -124,7 +124,7 @@ Commit history is the project's changelog, audit trail, and debugging tool all a
 - **Code review:** A well-scoped commit with a clear message makes the reviewer's job easier, since they know what to look for and what the intent is (since you are reading this, yes, this commit is doing exactly that for you).
 - **Onboarding:** New team members can understand the evolution of the codebase by reading the history, but only if the history is readable.
 
-### How Can Poor Commit Messages Cause Issues Later?
+## How Can Poor Commit Messages Cause Issues Later?
 
 Poor commit messages like "fixed stuff", "wip", "changes", "update", etc. are essentially noise in the history. They force anyone debugging or auditing to read the full diff of every commit to understand what changed and why, which is exactly the work that a good commit message should eliminate.
 
@@ -137,7 +137,7 @@ More specifically:
 
 A commit message cannot be retroactively improved once it is in shared history without rewriting history, which is disruptive in a team context. The cost of writing a good message upfront is seconds. The cost of a bad one compounds indefinitely.
 
-### Real-World Example: React's Commit History
+## Real-World Example: React's Commit History
 
 | **React Commit History** |
 | :----------------------: |
@@ -160,7 +160,7 @@ React's commit history is a good real-world reference. The Facebook/Meta team us
 **Bad examples:**
 - `Fix formatting`: no scope, no context, could mean anything in any file
 
-#### Key takeaway
+### Key takeaway
 
 React doesn't follow Conventional Commits strictly: and that is fine. The important
 thing is consistency within a project and clarity for both humans and tooling. A team
@@ -168,14 +168,14 @@ that consistently uses `[scope] description` is more readable than one that
 inconsistently follows any formal spec. The optimal commit message is one that is
 clear, consistently structured, and parseable by both humans and CI/CD pipelines.
 
-### Practical Task
+## Practical Task
 
 ![TASK#46](../../assets/onboarding/Screenshot%202026-05-22%20at%201.24.42 PM.png)
 
 
-## Merge Conflicts & Conflict Resolution
+# Merge Conflicts & Conflict Resolution
 
-### What Causes Merge Conflicts?
+## What Causes Merge Conflicts?
 
 A merge conflict occurs when Git cannot automatically reconcile differences between two branches. This happens when:
 
@@ -185,7 +185,7 @@ A merge conflict occurs when Git cannot automatically reconcile differences betw
 
 Git is actually quite good at merging automatically. It handles changes in different parts of the same file without conflict. Conflicts only arise when the same region of a file has diverged in incompatible ways, and Git genuinely cannot determine which version to keep without human judgment.
 
-### How Git Marks Conflicts
+## How Git Marks Conflicts
 
 When a conflict occurs, Git marks the affected file with conflict markers:
 
@@ -199,11 +199,11 @@ When a conflict occurs, Git marks the affected file with conflict markers:
 
 Everything between `<<<<<<< HEAD` and `=======` is what the current branch had. Everything between `=======` and `>>>>>>> branch-name` is what the incoming branch had. You resolve the conflict by editing the file to the correct final state and removing the markers entirely.
 
-### How I Reproduced and Resolved the Conflict
+## How I Reproduced and Resolved the Conflict
 
 ![TASK#60](../../assets/onboarding/Screenshot%202026-05-25%20at%2011.18.57 AM.png)
 
-### What I Learned
+## What I Learned
 
 A few things worth noting beyond the mechanics:
 
@@ -215,9 +215,9 @@ A few things worth noting beyond the mechanics:
 
 **`git rerere` (reuse recorded resolution):** if you resolve the same conflict multiple times (common during long rebases), Git can remember your resolution and apply it automatically in future. Worth knowing exists even if not used daily.
 
-## Creating & Reviewing Pull Requests
+# Creating & Reviewing Pull Requests
 
-### What is a Pull Request and Why is it Used?
+## What is a Pull Request and Why is it Used?
 
 A Pull Request (PR) in GitHub (also, called a Merge Request in GitLab) is a request to merge changes from one branch into another, typically from a feature branch into `main`. It is not a Git concept natively, it is a collaboration feature built on top of Git by hosting platforms like GitHub and GitLab.
 
@@ -228,7 +228,7 @@ The PR serves several purposes simultaneously:
 - It documents why a change was made, not just what changed
 - It links code changes to issues, tickets, or conversations
 
-### Why are PRs Important in a Team Workflow?
+## Why are PRs Important in a Team Workflow?
 
 PRs are the primary mechanism by which teams maintain code quality without slowing down individual contributors. Without PRs, every change goes directly to the shared branch, which means every mistake, every half-finished feature, and every style inconsistency becomes everyone's problem immediately.
 
@@ -241,7 +241,7 @@ With PRs:
 
 PRs also create accountability without micromanagement. A reviewer approving a PR is taking shared responsibility for that change, which encourages thorough review rather than rubber-stamping.
 
-### What Makes a Well-Structured PR?
+## What Makes a Well-Structured PR?
 
 A well-structured pull request (PR) has:
 
@@ -263,7 +263,7 @@ A well-structured pull request (PR) has:
 - **History and maintainability concerns raised:** the reviewer explicitly asks about preserving source control history for a 1:1 port, which is the kind of long-term thinking that makes codebases maintainable. The author responds with reasoning, not just a fix.
 - **Feature flagged:** the change is behind `enableNativeEventTargetEventDispatching`, meaning it can be merged without affecting existing behavior. This is a standard pattern for large changes in production codebases.
 
-### Practical Task
+## Practical Task
 
 All issues in this milestone have been submitted and merged via PRs on the intern repo, each with a descriptive title, body, and link to the related issue. This document itself will be merged via a PR linked to this issue, a self-referential proof that the task is being completed as intended.
 
