@@ -214,3 +214,57 @@ A few things worth noting beyond the mechanics:
 **Rebase vs merge for conflict resolution:** Merging creates a merge commit that preserves the full branch history. Rebasing replays commits from the feature branch on top of main, producing a linear history but rewriting commit hashes. For shared branches, rebase should be used carefully. For local feature branches, rebase before merging keeps the history clean.
 
 **`git rerere` (reuse recorded resolution):** if you resolve the same conflict multiple times (common during long rebases), Git can remember your resolution and apply it automatically in future. Worth knowing exists even if not used daily.
+
+## Creating & Reviewing Pull Requests
+
+### What is a Pull Request and Why is it Used?
+
+A Pull Request (PR) in GitHub (also, called a Merge Request in GitLab) is a request to merge changes from one branch into another, typically from a feature branch into `main`. It is not a Git concept natively, it is a collaboration feature built on top of Git by hosting platforms like GitHub and GitLab.
+
+The PR serves several purposes simultaneously:
+- It creates a structured review gate before changes reach the main branch
+- It provides a discussion space for the proposed changes
+- It triggers CI/CD checks automatically
+- It documents why a change was made, not just what changed
+- It links code changes to issues, tickets, or conversations
+
+### Why are PRs Important in a Team Workflow?
+
+PRs are the primary mechanism by which teams maintain code quality without slowing down individual contributors. Without PRs, every change goes directly to the shared branch, which means every mistake, every half-finished feature, and every style inconsistency becomes everyone's problem immediately.
+
+With PRs:
+- Changes are isolated until they are ready and reviewed
+- Reviewers can catch bugs, design issues, and inconsistencies before they reach production
+- The PR description and comments become permanent documentation of why a decision was made
+- Automated checks (tests, linters, security scans) run against the change before it merges
+- Junior contributors get structured feedback rather than silent judgment
+
+PRs also create accountability without micromanagement. A reviewer approving a PR is taking shared responsibility for that change, which encourages thorough review rather than rubber-stamping.
+
+### What Makes a Well-Structured PR?
+
+A well-structured pull request (PR) has:
+
+- **A clear, descriptive title** following the same conventions as commit messages, what changed and why, not a vague "fix stuff"
+- **A description** that explains the motivation, the approach taken, and any trade-offs or alternatives considered
+- **Links to related issues** so reviewers understand the context without having to search for it
+- **Screenshots or recordings** for UI changes so reviewers can see the result without checking out the branch
+- **A small, focused scope:** PRs that change one thing are reviewed faster and more thoroughly than PRs that change everything at once
+- **Self-review before requesting review:** the author should read their own diff before asking someone else to
+
+### Reviewing an Open-Source PR: React #36253
+
+[`[react-native-renderer] EventTarget-based event dispatching`](https://github.com/facebook/react/pull/36253) is a good real-world reference for what a well-structured PR looks like in a large open-source project.
+
+**What stands out:**
+
+- **Detailed summary:** the PR description explains not just what changed but the architectural reasoning like why EventTarget-based dispatching was chosen, what the cost model is (shifting cost from every render to only when events fire), and what is explicitly out of scope (responder events bypass EventTarget entirely).
+- **Inline review comments on specific lines:** reviewers `javache` and `rubennorte` leave comments directly on the affected files, asking concrete questions: "Any changes you want to highlight from the previous implementation?", "Why isn't this using ReactFeatureFlags?". These are not vague, they point to specific design decisions.
+- **History and maintainability concerns raised:** the reviewer explicitly asks about preserving source control history for a 1:1 port, which is the kind of long-term thinking that makes codebases maintainable. The author responds with reasoning, not just a fix.
+- **Feature flagged:** the change is behind `enableNativeEventTargetEventDispatching`, meaning it can be merged without affecting existing behavior. This is a standard pattern for large changes in production codebases.
+
+### Practical Task
+
+All issues in this milestone have been submitted and merged via PRs on the intern repo, each with a descriptive title, body, and link to the related issue. This document itself will be merged via a PR linked to this issue, a self-referential proof that the task is being completed as intended.
+
+For the full review-approve-merge cycle, [Wayfinder PR #445](https://github.com/OneBusAway/wayfinder/pull/445) is a real example from my open-source contributions, which was submitted to the Wayfinder project, reviewed by the project maintainer, approved, and merged. That is the complete PR lifecycle demonstrated in an actual team context outside of this internship.
