@@ -151,3 +151,80 @@ func isEligibleUser(_ user: [String: Any]) -> Bool {
 - The safe cast (`as? Int`) with `guard` eliminates the force unwrap entirely
 - The eligibility condition (`age >= 18`) is immediately visible instead of buried three levels deep
 - No comments needed as the code reads as plain English
+
+## Code Formatting & Style Guides
+
+### Why is Code Formatting Important?
+
+Code formatting is not about aesthetics, it is about reducing cognitive load. When formatting is inconsistent, the reader's brain spends energy parsing structure rather than understanding logic. Consistent formatting removes that friction entirely.
+
+More practically, formatting inconsistency causes noise in diffs. When a developer reformats a file as part of a change, the diff becomes a wall of whitespace changes that obscure the actual logic change. Automated formatters eliminate this problem by making formatting decisions non-negotiable and deterministic, so the diff shows only what actually changed.
+
+Formatting also enforces a shared standard in teams. Without it, code reviews devolve into style debates. With it, those debates happen once (when configuring the tool) and never again.
+
+### The Airbnb JavaScript Style Guide
+
+The [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) is one of the most widely adopted JS style guides. It enforces opinionated but well-reasoned rules: `const`/`let` over `var`, single quotes, required semicolons, `===` over `==`, arrow functions over function expressions, and more.
+
+The semicolon requirement is worth noting specifically. JavaScript has Automatic Semicolon Insertion (ASI) which makes semicolons technically optional, but ASI has edge cases that can introduce subtle bugs, particularly when a line starts with `[`, `(`, or a template literal. Airbnb requires semicolons to eliminate that ambiguity entirely, which is the safer choice.
+
+### Tools: ESLint and Prettier
+
+**Prettier** is an opinionated code formatter. It reformats code to a consistent style without caring about logic. It fixes indentation, line length, quote style, trailing commas, and spacing automatically.
+
+**ESLint** is a linter. It catches logical and stylistic issues that a formatter cannot fix automatically, so things like using `==` instead of `===`, variable shadowing, unused variables, and `var` declarations.
+
+The two tools are complementary. Prettier handles formatting, ESLint handles code quality. Running Prettier first and then ESLint is the standard workflow.
+
+### What Issues Did the Linter Detect?
+
+Running ESLint with the Airbnb config on a deliberately messy `main.js` produced **82 problems (75 errors, 7 warnings)**. The violations included:
+
+- **`no-var`**: `var` used instead of `const` or `let` throughout
+- **`quotes`**: double quotes used instead of required single quotes
+- **`semicolons`**: missing semicolons on every statement
+- **`indent`**: 4-space indentation instead of required 2-space
+- **`eqeqeq`**: `==` used instead of `===`
+- **`no-else-return`**: unnecessary `else` blocks after `return` statements
+- **`prefer-arrow-callback`**: `function` expression in `setTimeout` instead of arrow function
+- **`no-shadow`**: function parameter `isAdmin` shadowing outer `const isAdmin`
+- **`no-console`**: `console.log` statements flagged as warnings
+
+After running **Prettier**, formatting issues were automatically fixed down to
+**27 problems**. After running **ESLint --fix**, mechanical fixes were applied, which further brought
+down to **8 problems**. The remaining 2 errors required human judgment:
+
+1. **Variable shadowing** (`no-shadow`): renamed the `isAdmin` parameter to
+   `isAdminFlag` to eliminate the shadow
+2. **Loose equality** (`eqeqeq`): changed `user.isAdmin == true` to
+   `user.isAdmin === true`
+
+The 6 remaining warnings are all `no-console` which are all intentional for this demo file.
+
+### Did Formatting Make the Code Easier to Read?
+
+Yes, it did make it significantly more readable. The Prettier pass alone transformed a wall of inconsistently
+indented, quote-mixed, semicolon-free code into something structurally readable.
+The ESLint fixes then addressed the logical issues, like the `==` vs `===` distinction
+is not just style, it is correctness, since `==` performs type coercion that
+`===` does not.
+
+The most interesting part of the exercise was what the tools could not fix
+automatically. Variable shadowing and loose equality both require understanding
+intent, so the tool can flag them but cannot resolve them without knowing what the
+correct behavior should be. That boundary between automated and human judgment
+is where the real value of linting lies.
+
+### Practical Task
+
+| Setup & Installation | ESLint Violations (82 problems) |
+| :------------------: | :-----------------------------: |
+| ![ESLint Setup](../../assets/onboarding/Screenshot%202026-05-26%20at%203.09.14 PM.png) | ![ESLint Errors](../../assets/onboarding/CleanShot%202026-05-26%20at%2015.18.23@2x.png) |
+
+| Prettier Diff | ESLint Violations (27 problems) after Prettier |
+| :-----------: | :--------------------------------------------: |
+| ![ESLint Errors](../../assets/onboarding/CleanShot%202026-05-26%20at%2015.24.21@2x.png) | ![Prettier Diff](../../assets/onboarding/Screenshot%202026-05-26%20at%203.28.03 PM.png) |
+
+| After ESLint `--fix` (8 problems) | Manual Fixes Diff | ESLint Results |
+| :-------------------------------: | :---------------: | :------------: |
+| ![After Fix](../../assets/onboarding/Screenshot%202026-05-26%20at%203.30.39 PM.png) | ![Manual Fixes](../../assets/onboarding/Screenshot%202026-05-26%20at%208.50.18 PM.png) | ![After Prettier](../../assets/onboarding/Screenshot%202026-05-26%20at%208.47.13 PM.png) | 
