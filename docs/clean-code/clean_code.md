@@ -445,3 +445,125 @@ The refactored `processUserLogin` now reads like a checklist of what login does 
 More importantly, each extracted function is independently testable and reusable. `validateLoginInputs` can be called before any form submission. `generateSessionToken` can be reused for session refresh. `formatLoginResponse` can be updated independently when the API response format changes — without touching any of the other logic.
 
 The original function had one name but five reasons to change. The refactored version distributes those reasons across five functions that each have exactly one reason to change.
+
+## Avoiding Code Duplication
+
+### The DRY Principle
+
+DRY (Don't Repeat Yourself) states that every piece of knowledge should have a single, unambiguous representation in the codebase. When the same logic exists in multiple places, a change to that logic requires finding and updating every copy. Miss one, and the copies disagree which is worse than having no abstraction at all, because it creates silent inconsistency.
+
+DRY is not just about avoiding copy-pasted code. It applies to configuration, constants, validation rules, and any logic that encodes a business rule. If the same truth is expressed in two places, those two places will eventually diverge.
+
+### What Were the Issues with Duplicated Code?
+
+**Before: duplicated validation and response formatting:**
+
+```swift
+func createAdminUser(name: String, email: String, age: Int) -> String {
+    if name.isEmpty {
+        return "Error: name cannot be empty"
+    }
+    if !email.contains("@") {
+        return "Error: invalid email"
+    }
+    if age < 18 {
+        return "Error: must be 18 or older"
+    }
+    return """
+    {
+        "status": "success",
+        "role": "admin",
+        "name": "\(name)",
+        "email": "\(email)"
+    }
+    """
+}
+
+func createGuestUser(name: String, email: String, age: Int) -> String {
+    if name.isEmpty {
+        return "Error: name cannot be empty"
+    }
+    if !email.contains("@") {
+        return "Error: invalid email"
+    }
+    if age < 18 {
+        return "Error: must be 18 or older"
+    }
+    return """
+    {
+        "status": "success",
+        "role": "guest",
+        "name": "\(name)",
+        "email": "\(email)"
+    }
+    """
+}
+
+func createModeratorUser(name: String, email: String, age: Int) -> String {
+    if name.isEmpty {
+        return "Error: name cannot be empty"
+    }
+    if !email.contains("@") {
+        return "Error: invalid email"
+    }
+    if age < 18 {
+        return "Error: must be 18 or older"
+    }
+    return """
+    {
+        "status": "success",
+        "role": "moderator",
+        "name": "\(name)",
+        "email": "\(email)"
+    }
+    """
+}
+```
+
+The validation logic is identical across all three functions. The response format is identical except for the role string. If the minimum age changes from 18 to 16, or the email validation rule changes, all three functions must be updated, and there is nothing stopping one of them from being missed.
+
+**After: duplicated logic extracted:**
+
+```swift
+enum UserRole: String {
+    case admin
+    case guest
+    case moderator
+}
+
+func validateUserInputs(name: String, email: String, age: Int) -> String? {
+    if name.isEmpty { return "Error: name cannot be empty" }
+    if !email.contains("@") { return "Error: invalid email" }
+    if age < 18 { return "Error: must be 18 or older" }
+    return nil
+}
+
+func formatUserResponse(role: UserRole, name: String, email: String) -> String {
+    return """
+    {
+        "status": "success",
+        "role": "\(role.rawValue)",
+        "name": "\(name)",
+        "email": "\(email)"
+    }
+    """
+}
+
+func createUser(role: UserRole, name: String, email: String,
+                age: Int) -> String {
+    if let error = validateUserInputs(name: name, email: email, age: age) {
+        return error
+    }
+    return formatUserResponse(role: role, name: name, email: email)
+}
+```
+
+### How Did Refactoring Improve Maintainability?
+
+Three functions became one. The validation rule exists in exactly one place (`validateUserInputs`), so changing the minimum age or email format requires a single edit with zero risk of missing a copy. The response format exists in exactly one place (`formatUserResponse`), so adding a new field to the response requires one change, not three.
+
+Adding a new role is now a one-line addition to the `UserRole` enum. In the original, adding a `moderator` role required duplicating the entire function a third time.
+
+The refactored version also makes the relationship between the three original functions explicit, they all do the same thing with a different role. The original version hid that relationship behind three separate function names.
+
+DRY is ultimately about making the codebase tell the truth. Duplicated code lies, so it implies that two things are different when they are actually the same. Abstracting the duplication makes the sameness visible and enforces it structurally rather than relying on discipline.
