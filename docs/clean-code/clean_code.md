@@ -228,3 +228,92 @@ is where the real value of linting lies.
 | After ESLint `--fix` (8 problems) | Manual Fixes Diff | ESLint Results |
 | :-------------------------------: | :---------------: | :------------: |
 | ![After Fix](../../assets/onboarding/Screenshot%202026-05-26%20at%203.30.39 PM.png) | ![Manual Fixes](../../assets/onboarding/Screenshot%202026-05-26%20at%208.50.18 PM.png) | ![After Prettier](../../assets/onboarding/Screenshot%202026-05-26%20at%208.47.13 PM.png) | 
+
+## Naming Variables & Functions
+
+### What Makes a Good Variable or Function Name?
+
+A good name is one that makes the code read like prose, so the reader understands what something is or does without needing to trace its definition or read a comment explaining it.
+
+**For variables:**
+- Name what it represents, not what type it is (`userAge` not `ageInt`, `isEligible` not `boolFlag`)
+- Use nouns for values, booleans prefixed with `is`, `has`, `can`, or `should`
+- Avoid abbreviations unless they are universally understood (`id`, `url`, `http`)
+- Length should be proportional to scope, so a loop counter can be `i`, but a variable used across a module should be fully descriptive
+
+**For functions:**
+- Name what it does, not how it does it
+- Use verbs like `getUserById`, `calculateTotal`, `isEligibleForDiscount`, etc.
+- A function named `data` or `process` or `handle` tells you nothing
+- If you struggle to name a function, it is often doing too many things
+
+**The newspaper test:** read only the name. Does it tell you what you need to know? If you need to read the implementation to understand what the name means, the name has failed.
+
+### What Issues Arise from Poorly Named Variables?
+
+Poor names are a form of technical debt that compounds over time:
+
+- **Maintenance burden:** future developers (including yourself) must reverse-engineer intent from implementation rather than reading it directly
+- **Bug introduction:** ambiguous names lead to wrong assumptions, like `data`, `temp`, `result`, `val` could mean anything, and the next developer may use them incorrectly
+- **Review difficulty:** code reviewers cannot spot logic errors if they cannot quickly understand what each variable represents
+- **Documentation rot:** comments written to compensate for bad names become outdated and misleading as code evolves, while good names are always accurate
+
+The worst case is a name that is actively misleading, like a variable called
+`userList` that contains a count, or `isActive` that actually stores a timestamp.
+These are more dangerous than obviously bad names because they create false
+confidence.
+
+### Refactoring Example
+
+**Before: unclear naming:**
+
+```swift
+func p(_ d: [String: Any], _ f: Bool) -> String? {
+    let n = d["n"] as? String
+    let a = d["a"] as? Int
+    if let nm = n, let ag = a {
+        if ag > 18 && f {
+            return "Hello, \(nm)"
+        }
+    }
+    return nil
+}
+
+let u: [String: Any] = ["n": "Sannidhya", "a": 22]
+let r = p(u, true)
+```
+
+**After: clear naming:**
+
+```swift
+func buildGreeting(for user: [String: Any], isVerified: Bool) -> String? {
+    guard let name = user["name"] as? String,
+          let age = user["age"] as? Int else {
+        return nil
+    }
+    guard age > 18 && isVerified else {
+        return nil
+    }
+    return "Hello, \(name)"
+}
+
+let userData: [String: Any] = ["name": "Sannidhya", "age": 22]
+let greeting = buildGreeting(for: userData, isVerified: true)
+```
+
+**What changed:**
+- **`p` → `buildGreeting(for:isVerified:)`:** immediately communicates what the function produces and what it needs
+- **`d` → `user`, `f` → `isVerified`:** parameters now describe their role
+- **`n`, `a` → `name`, `age`:** single letter variables eliminated
+- **`nm`, `ag` → `name`, `age`:** binding names match what they represent
+- **`u` → `userData`, `r` → `greeting`:** call site is now self-documenting
+
+The refactored version can be read aloud and understood. The original required tracing every single-letter variable to its usage before the logic became clear.
+
+### How Did Refactoring Improve Readability?
+
+The most significant improvement was at the call site. `p(u, true)` is completely opaque, so you cannot tell what `true` means without reading the function signature. `buildGreeting(for: userData, isVerified: true)` reads as a sentence. Swift's argument labels make this particularly powerful, but the principle applies in any language.
+
+The secondary improvement was eliminating the cognitive load of tracking single-letter variables. In the original, every read of `nm` requires a mental lookup back to `let nm = n`. In the refactored version, `name` is always `name`.
+
+Names are the primary documentation of code. Good names make comments unnecessary. Bad names make comments insufficient.
