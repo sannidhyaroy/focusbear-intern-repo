@@ -315,10 +315,137 @@ Manual review is `O(n)`, you check commits one by one until you find the problem
 
 Bisect is `O(log n)`, so each step eliminates half the remaining candidates. 1000 commits is 10 steps. 1,000,000 commits is 20 steps.
 
-More importantly, manual review requires you to understand each commit's intent and reason about whether it could have caused the bug. Bisect requires only a reliable way to reproduce the bug — the reasoning is replaced by binary search. This is especially valuable when the bug is subtle or the codebase is unfamiliar.
+More importantly, manual review requires you to understand each commit's intent and reason about whether it could have caused the bug. Bisect requires only a reliable way to reproduce the bug, the reasoning is replaced by binary search. This is especially valuable when the bug is subtle or the codebase is unfamiliar.
 
 The limitation of bisect is that it requires a reproducible test condition. If you cannot reliably determine whether a given commit is good or bad, bisect cannot help. It also finds the first bad commit, not necessarily the root cause. The actual bug may have been introduced by a dependency change or an implicit assumption that was violated by a seemingly unrelated commit.
 
 ## Practical Task
 
 ![TASK#45](../../assets/onboarding/Screenshot%202026-05-26%20at%201.32.32 AM.png)
+
+# Advanced Git Commands & When to Use Them
+
+## `git restore --source=<branch> <file>` (formerly `git checkout <branch> -- <file>`)
+
+**What it does:**
+Restores a specific file to its state in another branch or commit without affecting anything else in the working tree or staging area. The modern equivalent of `git checkout main -- <file>` is `git restore --source=main <file>`, which is recommended instead of the checkout subcommand.
+
+**When to use it:**
+- You accidentally deleted or corrupted a file and want to restore it from `main` without reverting other in-progress changes
+- You want to bring in a specific file from another branch without merging or cherry-picking
+- You need to compare your version of a file against another branch's version by temporarily restoring it
+
+**Real-world scenario:**
+You are deep in a feature branch and realise you need the latest version of a config file from `main` that was updated by a teammate. Rather than merging or stashing and switching branches, you restore just that file.
+
+```bash
+git restore --source=main config/settings.json
+# or, the older form:
+git checkout main -- config/settings.json
+```
+
+---
+
+## `git cherry-pick <commit>`
+
+**What it does:**
+Applies the changes introduced by a specific commit onto the current branch, creating a new commit with the same changes but a different hash. It does not merge the entire branch, only the specified commit.
+
+**When to use it:**
+- A bug fix was committed to a feature branch and needs to be applied to `main` without merging the entire feature
+- A hotfix needs to be applied to multiple release branches simultaneously
+- You committed something to the wrong branch and need to move just that commit
+
+**Real-world scenario:**
+A critical security fix was committed to `feature/auth-refactor` which is not ready to merge. Cherry-pick the fix commit onto `main` and the `release/2.x` branch independently.
+
+```bash
+git cherry-pick 623927a
+# Cherry-pick a range of commits
+git cherry-pick abc123..def456
+```
+
+**Gotcha:** Cherry-picked commits get new hashes. If the original commit is later merged, Git may see the changes as duplicates and produce an empty commit, use `git cherry-pick -x` to add a note referencing the original commit hash, making future merges cleaner.
+
+---
+
+## `git log`
+
+**What it does:**
+Displays the commit history. With various flags it becomes one of the most powerful investigation tools in Git.
+
+**Useful flags:**
+
+```bash
+# Compact one-line view
+git log --oneline
+
+# Visual branch graph
+git log --oneline --graph --decorate --all
+
+# Find commits that changed a specific string (pickaxe search)
+git log -S "functionName"
+
+# Find commits affecting a specific file, following renames
+git log --follow -- path/to/file
+
+# Show commits by a specific author
+git log --author="Sannidhya"
+
+# Show commits in a date range
+git log --after="2026-01-01" --before="2026-06-01"
+
+# Show what changed in each commit
+git log -p
+
+# Show stats (files changed, insertions, deletions)
+git log --stat
+```
+
+**When to use it:**
+- Understanding how a codebase evolved over time
+- Finding when a specific function or string was introduced (`-S` pickaxe)
+- Investigating who worked on what and when
+- Tracing file renames across history (`--follow`)
+
+The pickaxe search (`-S`) is particularly underrated as it finds commits where a specific string was added or removed, which is invaluable for tracking down when a specific piece of logic was introduced or deleted.
+
+---
+
+## `git blame <file>`
+
+**What it does:**
+Annotates each line of a file with the commit hash, author, and date of the last modification to that line. It answers "who wrote this line and when", though more importantly, combined with `git log`, it answers "why does this line exist."
+
+**Useful flags:**
+
+```bash
+# Blame a specific line range
+git blame -L 10,25 path/to/file
+
+# Ignore whitespace changes
+git blame -w path/to/file
+
+# Ignore lines moved or copied from other files in the same commit
+git blame -C path/to/file
+
+# Show the actual commit content for each blamed line
+git blame -p path/to/file
+```
+
+**When to use it:**
+- A line of code looks wrong or surprising, blame tells you which commit introduced it, then `git show <hash>` tells you the full context of that change
+- Understanding why a particular implementation choice was made by finding the commit and reading its message and diff
+- Identifying who to ask about a specific piece of code
+
+**Important nuance:** `git blame` shows the last modification, not the original author. If someone reformatted the file, blame will point to the reformatting commit rather than the original logic. Use `-w` to ignore whitespace and `-C` to detect moved code. In practice, blame is a starting point for investigation, not the final answer.
+
+## What Surprised Me While Testing
+
+`git log -S` (pickaxe search) is something I knew about conceptually but testing it concretely made its power more apparent. Being able to search commit history for when a specific string was added or removed, across the entire project history is faster than grep-based approaches for historical investigation.
+
+The `-x` flag on `git cherry-pick` was also a useful reminder. It appends the original commit hash to the cherry-picked commit message, which prevents confusion when the source branch is eventually merged and Git encounters what looks like a duplicate change.
+
+## Practical Task
+
+![TASK#44](../../assets/onboarding/Screenshot%202026-05-26%20at%209.56.58 AM.png)
