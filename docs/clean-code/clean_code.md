@@ -317,3 +317,131 @@ The most significant improvement was at the call site. `p(u, true)` is completel
 The secondary improvement was eliminating the cognitive load of tracking single-letter variables. In the original, every read of `nm` requires a mental lookup back to `let nm = n`. In the refactored version, `name` is always `name`.
 
 Names are the primary documentation of code. Good names make comments unnecessary. Bad names make comments insufficient.
+
+## Writing Small, Focused Functions
+
+### Why is Breaking Down Functions Beneficial?
+
+A function should do one thing. This is the Single Responsibility Principle applied at the function level. When a function does multiple things, every one of those things becomes harder to test, harder to reuse, harder to name, and harder to change without affecting everything else the function does.
+
+Small, focused functions have several concrete advantages:
+
+- **Testability:** a function that does one thing has one reason to fail. You can write a single focused test for it. A function that does five things requires tests that cover every combination of those five things.
+- **Readability:** a well-named small function reads like documentation. A chain of well-named function calls tells a story, like `validateUser()`, `fetchUserData()`, `formatResponse()`, without requiring the reader to understand implementation details.
+- **Reusability:** small functions can be composed. A large monolithic function cannot be partially reused, you take all of it or none of it.
+- **Debuggability:** when something goes wrong, a stack trace of small named functions tells you exactly where the failure occurred. A stack trace pointing to a 200-line function tells you almost nothing.
+- **Changeability:** a change to one responsibility does not require touching code for other responsibilities. Small functions have smaller blast radii.
+
+The heuristic is: if you need a comment to explain what a block of code inside a function does, that block should be its own function with a name that replaces the comment.
+
+### Refactoring Example
+
+**Before: one large function doing everything:**
+
+```swift
+func processUserLogin(username: String, password: String) -> String {
+    // Validate inputs
+    if username.isEmpty || password.isEmpty {
+        return "Error: fields cannot be empty"
+    }
+    if password.count < 8 {
+        return "Error: password too short"
+    }
+    if !username.contains("@") {
+        return "Error: invalid email format"
+    }
+
+    // Simulate fetching user from database
+    let mockUsers = ["user@example.com": "password123"]
+    guard let storedPassword = mockUsers[username] else {
+        return "Error: user not found"
+    }
+
+    // Check password
+    if storedPassword != password {
+        return "Error: incorrect password"
+    }
+
+    // Generate session token
+    let token = "\(username)-\(Int.random(in: 100000...999999))"
+
+    // Format success response
+    let response = """
+    {
+        "status": "success",
+        "token": "\(token)",
+        "user": "\(username)"
+    }
+    """
+    return response
+}
+```
+
+This function validates inputs, queries a data source, checks credentials,
+generates a token, and formats a response, five distinct responsibilities
+in one place.
+
+**After: broken into focused functions:**
+
+```swift
+func validateLoginInputs(username: String, password: String) -> String? {
+    if username.isEmpty || password.isEmpty {
+        return "Error: fields cannot be empty"
+    }
+    if !username.contains("@") {
+        return "Error: invalid email format"
+    }
+    if password.count < 8 {
+        return "Error: password too short"
+    }
+    return nil
+}
+
+func findUser(username: String, in users: [String: String]) -> String? {
+    return users[username]
+}
+
+func verifyPassword(_ input: String, against stored: String) -> Bool {
+    return input == stored
+}
+
+func generateSessionToken(for username: String) -> String {
+    return "\(username)-\(Int.random(in: 100000...999999))"
+}
+
+func formatLoginResponse(token: String, username: String) -> String {
+    return """
+    {
+        "status": "success",
+        "token": "\(token)",
+        "user": "\(username)"
+    }
+    """
+}
+
+func processUserLogin(username: String, password: String) -> String {
+    if let validationError = validateLoginInputs(username: username, password: password) {
+        return validationError
+    }
+
+    let mockUsers = ["user@example.com": "password123"]
+    guard let storedPassword = findUser(username: username, in: mockUsers) else {
+        return "Error: user not found"
+    }
+
+    guard verifyPassword(password, against: storedPassword) else {
+        return "Error: incorrect password"
+    }
+
+    let token = generateSessionToken(for: username)
+    return formatLoginResponse(token: token, username: username)
+}
+```
+
+### How Did Refactoring Improve the Structure?
+
+The refactored `processUserLogin` now reads like a checklist of what login does — validate, find user, verify password, generate token, format response. Each step is named and its purpose is immediately clear without reading its implementation.
+
+More importantly, each extracted function is independently testable and reusable. `validateLoginInputs` can be called before any form submission. `generateSessionToken` can be reused for session refresh. `formatLoginResponse` can be updated independently when the API response format changes — without touching any of the other logic.
+
+The original function had one name but five reasons to change. The refactored version distributes those reasons across five functions that each have exactly one reason to change.
