@@ -818,3 +818,124 @@ The magic number becomes a named constant, and the comment explains the business
 ### The Rule of Thumb
 
 Write code that does not need comments. Write comments for everything that code cannot express: the why, the trade-off, the external constraint, the non-obvious invariant. A codebase with no comments at all is probably missing important context. A codebase where every line has a comment is probably compensating for unclear code.
+
+## Handling Errors & Edge Cases
+
+### Strategies for Error Handling
+
+Robust code anticipates failure. Every function that receives input, accesses a resource, or performs an operation that can fail should handle the failure case explicitly rather than assuming success.
+
+**Guard clauses** are the primary tool for this in Swift. A guard clause validates a precondition at the top of a function and exits early if it is not met, keeping the happy path unindented and clear:
+
+```swift
+func processOrder(order: Order?) {
+    guard let order = order else {
+        print("Error: order is nil")
+        return
+    }
+    guard order.items.isEmpty == false else {
+        print("Error: order has no items")
+        return
+    }
+    guard order.total > 0 else {
+        print("Error: invalid order total")
+        return
+    }
+    // Happy path (all preconditions met)
+    submitOrder(order)
+}
+```
+
+Other key strategies:
+
+- **Use `Result<Success, Failure>`** for functions that can fail in multiple ways, making the caller explicitly handle both cases
+- **Use `throws` and `try/catch`** for operations that can fail with typed errors, giving callers structured error information
+- **Validate at the boundary:** validate inputs as early as possible, at the point where data enters the system, rather than deep inside business logic
+- **Fail loudly in development, gracefully in production:** use `assert()` and `precondition()` during development to catch programmer errors early, but handle user-facing errors gracefully without crashing
+- **Never swallow errors silently:** an empty `catch` block or a forced `try!` is worse than no error handling at all because it hides failures
+
+### What Was the Issue with the Original Code?
+
+**Before (no error handling):**
+
+```swift
+func divide(_ a: Double, by b: Double) -> Double {
+    return a / b
+}
+
+func getUserAge(from profile: [String: Any]) -> Int {
+    return profile["age"] as! Int
+}
+
+func fetchFirstItem(from list: [String]) -> String {
+    return list[0]
+}
+```
+
+These three separate functions have three separate ways to crash:
+
+- `divide(10, by: 0)` returns `infinity` or `nan` silently. Mathematically valid in IEEE 754 but almost certainly wrong in a business context
+- `profile["age"] as! Int` crashes at runtime if `age` is missing, `nil`, or not an `Int`. Force unwrapping optional values is a deferred crash
+- `list[0]` crashes with an index out of bounds exception if `list` is empty
+
+None of these functions communicate that they can fail. The caller has no way to know they need to handle failure cases, and the failures are not handled gracefully, they either produce wrong results silently or crash.
+
+**After (explicit error handling):**
+
+```swift
+enum AppError: Error {
+    case divisionByZero
+    case missingField(String)
+    case invalidType(String)
+    case emptyCollection
+}
+
+func divide(_ a: Double, by b: Double) throws -> Double {
+    guard b != 0 else {
+        throw AppError.divisionByZero
+    }
+    return a / b
+}
+
+func getUserAge(from profile: [String: Any]) throws -> Int {
+    guard let value = profile["age"] else {
+        throw AppError.missingField("age")
+    }
+    guard let age = value as? Int else {
+        throw AppError.invalidType("age must be Int")
+    }
+    return age
+}
+
+func fetchFirstItem(from list: [String]) throws -> String {
+    guard let first = list.first else {
+        throw AppError.emptyCollection
+    }
+    return first
+}
+
+// Call site (forced to handle failure)
+do {
+    let result = try divide(10, by: 0)
+    let age = try getUserAge(from: ["name": "Sannidhya"])
+    let item = try fetchFirstItem(from: [])
+} catch AppError.divisionByZero {
+    print("Cannot divide by zero")
+} catch AppError.missingField(let field) {
+    print("Missing required field: \(field)")
+} catch AppError.invalidType(let message) {
+    print("Type error: \(message)")
+} catch AppError.emptyCollection {
+    print("List was empty")
+}
+```
+
+### How Does Handling Errors Improve Reliability?
+
+The refactored version makes failure visible at the call site. The `throws` keyword in the function signature is a contract, it tells every caller that this function can fail and you must decide what to do about it. The compiler enforces this, you cannot call a `throws` function without either using `try` inside a `do/catch` or propagating the error with `try` in your own `throws` function.
+
+The typed `AppError` enum is important. It gives the caller structured information about what went wrong rather than a generic error message. A caller handling `divisionByZero` can take a different action than one handling `emptyCollection`, which is only possible if the error type encodes the distinction.
+
+Guard clauses at the top of each function mean the failure cases are handled first and explicitly, before any business logic runs. This is the opposite of the original code where failures were implicit and scattered, or more accurately, not handled at all.
+
+The most important improvement is that the original code could fail silently. `divide(10, by: 0)` returning `infinity` could propagate through an entire calculation pipeline before producing a wrong result that is difficult to trace back to its source. The refactored version fails immediately, loudly, and at the exact point of failure, making debugging significantly easier.
