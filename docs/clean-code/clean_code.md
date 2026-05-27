@@ -265,7 +265,7 @@ confidence.
 
 ### Refactoring Example
 
-**Before: unclear naming:**
+**Before (unclear naming):**
 
 ```swift
 func p(_ d: [String: Any], _ f: Bool) -> String? {
@@ -283,7 +283,7 @@ let u: [String: Any] = ["n": "Sannidhya", "a": 22]
 let r = p(u, true)
 ```
 
-**After: clear naming:**
+**After (clear naming):**
 
 ```swift
 func buildGreeting(for user: [String: Any], isVerified: Bool) -> String? {
@@ -336,7 +336,7 @@ The heuristic is: if you need a comment to explain what a block of code inside a
 
 ### Refactoring Example
 
-**Before: one large function doing everything:**
+**Before (one large function doing everything):**
 
 ```swift
 func processUserLogin(username: String, password: String) -> String {
@@ -381,7 +381,7 @@ This function validates inputs, queries a data source, checks credentials,
 generates a token, and formats a response, five distinct responsibilities
 in one place.
 
-**After: broken into focused functions:**
+**After (broken into focused functions):**
 
 ```swift
 func validateLoginInputs(username: String, password: String) -> String? {
@@ -440,9 +440,9 @@ func processUserLogin(username: String, password: String) -> String {
 
 ### How Did Refactoring Improve the Structure?
 
-The refactored `processUserLogin` now reads like a checklist of what login does — validate, find user, verify password, generate token, format response. Each step is named and its purpose is immediately clear without reading its implementation.
+The refactored `processUserLogin` now reads like a checklist of what login does: validate, find user, verify password, generate token, format response. Each step is named and its purpose is immediately clear without reading its implementation.
 
-More importantly, each extracted function is independently testable and reusable. `validateLoginInputs` can be called before any form submission. `generateSessionToken` can be reused for session refresh. `formatLoginResponse` can be updated independently when the API response format changes — without touching any of the other logic.
+More importantly, each extracted function is independently testable and reusable. `validateLoginInputs` can be called before any form submission. `generateSessionToken` can be reused for session refresh. `formatLoginResponse` can be updated independently when the API response format changes without touching any of the other logic.
 
 The original function had one name but five reasons to change. The refactored version distributes those reasons across five functions that each have exactly one reason to change.
 
@@ -456,7 +456,7 @@ DRY is not just about avoiding copy-pasted code. It applies to configuration, co
 
 ### What Were the Issues with Duplicated Code?
 
-**Before: duplicated validation and response formatting:**
+**Before (duplicated validation and response formatting):**
 
 ```swift
 func createAdminUser(name: String, email: String, age: Int) -> String {
@@ -522,7 +522,7 @@ func createModeratorUser(name: String, email: String, age: Int) -> String {
 
 The validation logic is identical across all three functions. The response format is identical except for the role string. If the minimum age changes from 18 to 16, or the email validation rule changes, all three functions must be updated, and there is nothing stopping one of them from being missed.
 
-**After: duplicated logic extracted:**
+**After (duplicated logic extracted):**
 
 ```swift
 enum UserRole: String {
@@ -567,3 +567,110 @@ Adding a new role is now a one-line addition to the `UserRole` enum. In the orig
 The refactored version also makes the relationship between the three original functions explicit, they all do the same thing with a different role. The original version hid that relationship behind three separate function names.
 
 DRY is ultimately about making the codebase tell the truth. Duplicated code lies, so it implies that two things are different when they are actually the same. Abstracting the duplication makes the sameness visible and enforces it structurally rather than relying on discipline.
+
+## Refactoring Code for Simplicity
+
+### Common Refactoring Techniques
+
+Refactoring is restructuring existing code without changing its external behavior. The goal is to make the code easier to understand and modify. Common techniques include:
+
+- **Extract function:** pull a block of code into a named function
+- **Inline variable:** replace a variable that only exists to name an expression with the expression itself when the name adds no clarity
+- **Replace conditional with guard:** flatten nested conditions using early returns
+- **Replace magic numbers with named constants:** make intent explicit
+- **Simplify boolean expressions:** remove redundant comparisons like `== true` or `!= false`
+- **Replace nested conditionals with polymorphism or enums:** use the type system to eliminate branching
+- **Remove dead code:** delete code that is never reached or no longer used
+
+The most important principle: refactor in small steps, verifying correctness at each step. Large refactors that change many things at once are risky and hard to review.
+
+### What Made the Original Code Complex?
+
+**Before (over-engineered and unnecessarily complex):**
+
+```swift
+class UserStatusChecker {
+    private var statusMap: [String: [String: Any]] = [:]
+
+    func initialize(with users: [(String, Int, Bool)]) {
+        for user in users {
+            var entry: [String: Any] = [:]
+            entry["age"] = user.1
+            entry["active"] = user.2
+            statusMap[user.0] = entry
+        }
+    }
+
+    func checkStatus(forUser identifier: String) -> String {
+        if let userData = statusMap[identifier] {
+            if let age = userData["age"] as? Int {
+                if age >= 18 {
+                    if let active = userData["active"] as? Bool {
+                        if active == true {
+                            return "eligible"
+                        } else {
+                            return "inactive"
+                        }
+                    } else {
+                        return "unknown"
+                    }
+                } else {
+                    return "underage"
+                }
+            } else {
+                return "invalid"
+            }
+        } else {
+            return "not found"
+        }
+    }
+}
+
+let checker = UserStatusChecker()
+checker.initialize(with: [("alice", 25, true), ("bob", 16, true)])
+let status = checker.checkStatus(forUser: "alice")
+```
+
+Problems with this code:
+- A class is used when a simple function would do, as no state needs to be encapsulated between calls
+- `statusMap` stores typed data as `[String: Any]`, losing type safety and requiring unsafe casts on every read
+- Five levels of nested `if` statements to express what is fundamentally a linear sequence of checks
+- Tuple indexing (`user.0`, `user.1`, `user.2`) instead of named properties
+- The `if active == true` comparison is redundant, `active` is already a Bool
+
+**After (simplified):**
+
+```swift
+struct User {
+    let name: String
+    let age: Int
+    let isActive: Bool
+}
+
+func checkUserStatus(_ user: User) -> String {
+    guard user.age >= 18 else { return "underage" }
+    guard user.isActive else { return "inactive" }
+    return "eligible"
+}
+
+let users = [
+    User(name: "alice", age: 25, isActive: true),
+    User(name: "bob", age: 16, isActive: true),
+]
+
+if let alice = users.first(where: { $0.name == "alice" }) {
+    let status = checkUserStatus(alice)
+}
+```
+
+### How Did Refactoring Improve It?
+
+The class was replaced with a struct and a free function. There was no reason for a class, since no inheritance, no reference semantics, no shared mutable state. The unnecessary abstraction was removed entirely.
+
+The `[String: Any]` dictionary was replaced with a typed `User` struct. Every field is now named, typed, and accessed without casting. The compiler catches type errors instead of crashing at runtime.
+
+Five levels of nesting became two `guard` statements. Guard flattens the happy path, which the reader sees immediately what conditions are required and what happens when they fail, without tracking nested braces.
+
+The tuple indexing (`user.0`) was replaced with named properties (`user.name`, `user.age`, `user.isActive`). The struct makes the data self-documenting.
+
+The total line count went from 38 to 15. Every line removed was complexity that was not earning its place. Simplicity isn't about writing less code, but having no code that does not need to exist.
