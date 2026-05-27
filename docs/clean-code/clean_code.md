@@ -674,3 +674,147 @@ Five levels of nesting became two `guard` statements. Guard flattens the happy p
 The tuple indexing (`user.0`) was replaced with named properties (`user.name`, `user.age`, `user.isActive`). The struct makes the data self-documenting.
 
 The total line count went from 38 to 15. Every line removed was complexity that was not earning its place. Simplicity isn't about writing less code, but having no code that does not need to exist.
+
+## Commenting & Documentation
+
+### When Should You Add Comments?
+
+Comments should explain **why**, not **what**. If the code is clear enough to explain what it does, a comment restating that is noise. If the reasoning behind a decision is not obvious from the code itself, a comment is essential.
+
+**Add comments when:**
+
+- **The reasoning is non-obvious:** A performance optimisation, a workaround for a known bug, a business rule that seems arbitrary, since these deserve explanation. The code shows what happens; the comment explains why it was done this way and not another.
+
+    ```swift
+    // Using linear search here instead of binary search because the array
+    // is almost always fewer than 5 elements in practice. The overhead of
+    // maintaining sorted order outweighs the search cost at this scale.
+    let result = items.first(where: { $0.id == targetId })
+    ```
+
+- **A public API needs documentation:** Functions, classes, and modules that will be used by other developers, including future you, should have documentation comments explaining parameters, return values, and behaviour. In Swift this means `///` doc comments that appear in Xcode's quick help.
+
+    ```swift
+    /// Validates user inputs before account creation.
+    /// - Parameters:
+    ///   - name: The user's display name. Must not be empty.
+    ///   - email: Must contain an `@` character.
+    ///   - age: Must be 18 or older.
+    /// - Returns: An error message string, or `nil` if all inputs are valid.
+    func validateUserInputs(name: String, email: String, age: Int) -> String?
+    ```
+
+- **A workaround exists for an external constraint:** If you are working around a library bug, an OS limitation, or a third-party API quirk, document it and include a link to the issue or ticket if one exists. Without this, the next developer will remove the "unnecessary" workaround and reintroduce the bug.
+
+    Below is an example a comment documenting a SwiftUI memory leak workaround (Source: [Soduto](https://github.com/sannidhyaroy/Soduto)):
+
+    ```swift
+    // SwiftUI TimelineView leaks attribute-graph nodes on every evaluation
+    // regardless of rendering backend (Canvas, Metal shaders, or plain views).
+    // With a 60fps schedule this produces unbounded memory growth (~0.3–1.5 MB/s,
+    // visible as a sawtooth pattern in Instruments). `contentTransition(.numericText)`
+    // amplifies the effect by adding per-character animation nodes each tick.
+    //
+    // A follow-up commit eliminated SwiftUI observation entirely for the hot path:
+    // PlayerRemote.position and timestamp are non-@Published, routing updates
+    // directly into the NSView via Combine without triggering SwiftUI body
+    // re-evaluations. During normal playback this component now produces zero
+    // SwiftUI body re-evaluations.
+    //
+    // See: github.com/sannidhyaroy/Soduto/commit/c413760, github.com/sannidhyaroy/Soduto/commit/db1c4d2
+    ```
+
+- **Regular expressions or complex algorithms need explanation.** A regex pattern is not self-documenting. A non-obvious algorithm deserves a reference to the source or a plain-language description of the approach.
+
+### When Should You Avoid Comments and Improve the Code Instead?
+
+A comment that compensates for unclear code is a red flag. The instinct to add a comment should first trigger the question: can I make the code clear enough that the comment is unnecessary?
+
+**Avoid comments when:**
+
+- **The comment restates what the code already says:** The comment adds nothing. Delete it.
+
+    ```swift
+    // Increment counter
+    counter += 1
+    ```
+
+- **A better name would make the comment unnecessary:**
+
+    ```swift
+    // Check if user is old enough
+    if age >= 18 { ... }
+    
+    // Better (no comment needed):
+    let isEligibleAge = age >= 18
+    if isEligibleAge { ... }
+    ```
+
+- **The comment is a section divider inside a long function:** If you are writing comments like `// Step 1: validate`, `// Step 2: fetch`, `// Step 3: format` inside a single function, those steps should be extracted into their own functions. The section dividers are a symptom of a function doing too much.
+
+- **The comment describes what the code used to do:** Commented-out code and historical notes belong in version control history, not in the source file. `git log` and `git blame` preserve history, so dead code in comments is just clutter.
+
+- **The comment will go stale:** A comment that says "this list has 5 items" becomes a lie the moment the list changes. Comments that describe state or counts rather than intent are almost always wrong eventually.
+
+### Example: Poor Comments Rewritten
+
+**Before (comments that add noise):**
+
+```swift
+// Function to get user
+func getUser(id: Int) -> User? {
+    // Loop through users
+    for user in users {
+        // Check if id matches
+        if user.id == id {
+            // Return the user
+            return user
+        }
+    }
+    // Return nil if not found
+    return nil
+}
+```
+
+Every comment here restates the code. They add reading overhead without adding understanding. Remove them all, as the code is already clear.
+
+**After (no comments needed):**
+
+```swift
+func findUser(byId id: Int) -> User? {
+    return users.first(where: { $0.id == id })
+}
+```
+
+The rename from `getUser` to `findUser` is more expressive. The implementation is one line. No comments required.
+
+**Before (missing a comment that matters):**
+
+```swift
+func calculateDiscount(for user: User) -> Double {
+    if user.registrationDate < Date(timeIntervalSince1970: 1609459200) {
+        return 0.20
+    }
+    return 0.10
+}
+```
+
+**After (comment explains the why):**
+
+```swift
+func calculateDiscount(for user: User) -> Double {
+    // Users who registered before 2021 are grandfathered into the legacy
+    // 20% discount tier per the pricing policy change in Q1 2021.
+    let legacyTierCutoff = Date(timeIntervalSince1970: 1609459200)
+    if user.registrationDate < legacyTierCutoff {
+        return 0.20
+    }
+    return 0.10
+}
+```
+
+The magic number becomes a named constant, and the comment explains the business rule that no amount of renaming could make obvious.
+
+### The Rule of Thumb
+
+Write code that does not need comments. Write comments for everything that code cannot express: the why, the trade-off, the external constraint, the non-obvious invariant. A codebase with no comments at all is probably missing important context. A codebase where every line has a comment is probably compensating for unclear code.
