@@ -939,3 +939,75 @@ The typed `AppError` enum is important. It gives the caller structured informati
 Guard clauses at the top of each function mean the failure cases are handled first and explicitly, before any business logic runs. This is the opposite of the original code where failures were implicit and scattered, or more accurately, not handled at all.
 
 The most important improvement is that the original code could fail silently. `divide(10, by: 0)` returning `infinity` could propagate through an entire calculation pipeline before producing a wrong result that is difficult to trace back to its source. The refactored version fails immediately, loudly, and at the exact point of failure, making debugging significantly easier.
+
+## Writing Unit Tests for Clean Code
+
+### How Do Unit Tests Help Keep Code Clean?
+
+Unit tests and clean code have a symbiotic relationship. Clean code is easier to test, and writing tests forces code to become cleaner.
+
+A function that is hard to test is almost always a function with too many responsibilities, too many dependencies, or too many side effects. The act of writing a test exposes these problems immediately. If you cannot call a function in isolation with known inputs and verify its output, the function is doing too much or knows too much about the world around it.
+
+Unit tests also act as a safety net for refactoring. Without tests, changing code requires manually verifying that nothing broke. With tests, the suite tells you immediately. This makes the Boy Scout Rule practical, you can clean up code you encounter without fear of introducing regressions.
+
+Tests are also documentation. A well-written test suite describes exactly what a function is supposed to do under various conditions, including edge cases that might not be obvious from the implementation alone.
+
+### Testing Framework
+
+For this exercise, Swift Testing (introduced in Xcode 16) is used, the modern replacement for XCTest with a cleaner, macro-based API. The functions tested are from earlier sections of this milestone.
+
+```swift
+import Testing
+
+// Testing the `validateUserInputs` function from the Naming section
+@Test func testValidateUserInputs_validInputs() {
+    let result = validateUserInputs(name: "Sannidhya", email: "s@example.com", age: 22)
+    #expect(result == nil)
+}
+
+@Test func testValidateUserInputs_emptyName() {
+    let result = validateUserInputs(name: "", email: "s@example.com", age: 22)
+    #expect(result == "Error: name cannot be empty")
+}
+
+@Test func testValidateUserInputs_invalidEmail() {
+    let result = validateUserInputs(name: "Sannidhya", email: "notanemail", age: 22)
+    #expect(result == "Error: invalid email")
+}
+
+@Test func testValidateUserInputs_underage() {
+    let result = validateUserInputs(name: "Sannidhya", email: "s@example.com", age: 16)
+    #expect(result == "Error: must be 18 or older")
+}
+
+// Testing the divide function from the Error Handling section
+@Test func testDivide_normalDivision() throws {
+    let result = try divide(10, by: 2)
+    #expect(result == 5.0)
+}
+
+@Test func testDivide_byZeroThrows() {
+    #expect(throws: AppError.divisionByZero) {
+        try divide(10, by: 0)
+    }
+}
+
+// Edge cases
+@Test func testValidateUserInputs_exactlyEighteen() {
+    let result = validateUserInputs(name: "Sannidhya", email: "s@example.com", age: 18)
+    #expect(result == nil)
+}
+
+@Test func testDivide_negativeNumbers() throws {
+    let result = try divide(-10, by: 2)
+    #expect(result == -5.0)
+}
+```
+
+### What Issues Did I Find While Testing?
+
+Writing the tests for `validateUserInputs` immediately revealed an ordering issue. The function checks name, then email, then age. If both name and email are invalid, only the name error is returned. Whether this is correct depends on requirements, should validation return all errors or just the first? The test suite made this decision visible and explicit.
+
+The `divide` edge case tests also raised a question: what should happen with `divide(-10, by: -2)`? The function returns `5.0` which is mathematically correct, but the test forces you to consider whether negative inputs are a valid use case or should be rejected. Without the test, this assumption stays implicit.
+
+This is the core value of unit testing beyond catching bugs, it forces you to make implicit assumptions explicit. Every test is a documented decision about how the code should behave.
