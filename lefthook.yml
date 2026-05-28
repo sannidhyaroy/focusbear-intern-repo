@@ -1,0 +1,19 @@
+pre-commit:
+  parallel: false
+
+  commands:
+    markdown-lint:
+      tags: linter formatting
+      glob: "*.md"
+
+      skip:
+        - merge
+        - rebase
+        - run && ! command -v npx
+
+      env:
+        LEFTHOOK_VERBOSE: "true"
+
+      run: npx --yes markdownlint-cli2 --config .markdownlint.yaml --fix {staged_files}
+
+      stage_fixed: true

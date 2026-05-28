@@ -1,0 +1,115 @@
+name: Markdown Lint and Spell Check
+
+on:
+    push:
+        branches: [main, ci/**]
+    pull_request:
+        branches: [main]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    markdown-quality:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+                  persist-credentials: true
+
+            - name: Check for changed markdown files
+              id: changes
+              uses: dorny/paths-filter@v4
+              with:
+                  list-files: "json"
+                  filters: |
+                      md:
+                          - added|modified: '**/*.md'
+
+            - name: Parse changed markdown files
+              id: parse
+              if: steps.changes.outputs.md == 'true'
+              run: |
+                  cat << 'JSONEOF' > /tmp/input.json
+                  ${{ steps.changes.outputs.md_files }}
+                  JSONEOF
+                  python3 -c "
+                  import json
+                  with open('/tmp/input.json') as f:
+                      files = json.load(f)
+                  print('\n'.join(files))
+                  " > /tmp/md_files.txt
+                  {
+                    echo 'files<<EOF'
+                    cat /tmp/md_files.txt
+                    echo EOF
+                  } >> $GITHUB_OUTPUT
+
+            - name: Run markdownlint with autofix
+              id: markdownlint-autofix
+              if: |
+                  steps.parse.outcome == 'success' && (
+                    github.event_name == 'push' || (
+                      github.event_name == 'pull_request' &&
+                      github.event.pull_request.head.repo.full_name == github.repository
+                    )
+                  )
+              uses: DavidAnson/markdownlint-cli2-action@v23
+              with:
+                  config: .markdownlint.yaml
+                  globs: |
+                      ${{ steps.parse.outputs.files }}
+                  fix: true
+
+            - name: Run markdownlint checks
+              id: markdownlint-checks
+              if: |
+                  steps.parse.outcome == 'success' && (
+                    github.event_name == 'pull_request' &&
+                    github.event.pull_request.head.repo.full_name != github.repository
+                  )
+              uses: DavidAnson/markdownlint-cli2-action@v23
+              with:
+                  config: .markdownlint.yaml
+                  globs: |
+                      ${{ steps.parse.outputs.files }}
+                  fix: false
+
+            - name: Run cspell
+              if: |
+                  !cancelled() &&
+                  steps.parse.outcome == 'success' &&
+                  (
+                    steps.markdownlint-autofix.outcome == 'success' ||
+                    steps.markdownlint-autofix.outcome == 'failure' ||
+                    steps.markdownlint-checks.outcome == 'success' ||
+                    steps.markdownlint-checks.outcome == 'failure'
+                  )
+              uses: streetsidesoftware/cspell-action@v8
+              with:
+                  files: |
+                      ${{ steps.parse.outputs.files }}
+                  incremental_files_only: false
+                  suggestions: true
+
+            - name: Commit and push changes
+              if: |
+                  success() && (
+                    github.event_name == 'push' || (
+                      github.event_name == 'pull_request' &&
+                      github.event.pull_request.head.repo.full_name == github.repository
+                    )
+                  )
+              uses: planetscale/ghcommit-action@v0.2.20
+              with:
+                  commit_message: "style(markdown): autofix markdown formatting [skip ci]"
+                  repo: ${{ github.repository }}
+                  branch: ${{ github.head_ref || github.ref_name }}
+                  file_pattern: "**/*.md"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
