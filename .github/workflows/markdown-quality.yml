@@ -95,6 +95,7 @@ jobs:
                   files: |
                       ${{ steps.parse.outputs.files }}
                   incremental_files_only: false
+                  suggestions: true
 
             - name: Commit and push changes
               if: |

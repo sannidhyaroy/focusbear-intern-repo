@@ -22,7 +22,7 @@ Key design decisions:
 
 ## Git Hooks
 
-Git hooks are scripts that Git runs automatically at specific points in the workflow, like before a commit, before a push, after a merge, and so on. They are the last line of defence before code leaves the local machine.
+Git hooks are scripts that Git runs automatically at specific points in the workflow, like before a commit, before a push, after a merge, and so on. They are the last line of defense before code leaves the local machine.
 
 Tools like Husky, Lefthook, and pre-commit exist to make hooks manageable in team codebases, storing configuration in the repository so every developer gets the same hooks without manual setup. I knew this going in, but I still wanted to do the native approach because this project has zero dependencies and no package manager.
 
@@ -32,7 +32,7 @@ A plain shell script in `.githooks/pre-commit`, activated with `git config core.
 
 Then I imagined a problem in my mind after staring at the shell script for some time. I use `git add -p` regularly to stage changes selectively, committing only specific hunks rather than entire files to ensure commits are scoped appropriately. The hook runs after staging but before the commit, and when it auto-fixes a file and re-stages it with `git add`, it pulls in everything, including the hunks I had deliberately left unstaged. My careful partial staging would be silently overwritten, if I committed to this approach.
 
-I could not find a clean fix for this within the native approach, without the deep rabbithole of extremely complex shell code. The hook has no awareness of what was and was not intentionally staged. I thought that I could make the hook stash the unstaged files, then apply the fix, stage them, and then unstash the files again, but then I thought to not further complicate things and hit a roadblock again, so I ditched this approach. After all, that is exactly the kind of edge case these tools were built to handle, and experiencing it firsthand made that value concrete in a way no documentation ever could.
+I could not find a clean fix for this within the native approach, without the deep rabbit hole of extremely complex shell code. The hook has no awareness of what was and was not intentionally staged. I thought that I could make the hook stash the unstaged files, then apply the fix, stage them, and then unstash the files again, but then I thought to not further complicate things and hit a roadblock again, so I ditched this approach. After all, that is exactly the kind of edge case these tools were built to handle, and experiencing it firsthand made that value concrete in a way no documentation ever could.
 
 ### Switching to Lefthook
 
@@ -64,6 +64,6 @@ Automation is also consistent in a way humans are not. A linter applies the same
 
 In a small project or solo repository, CI is primarily a safety net, it catches mistakes before they merge and provides a record of what was verified. The pipeline is simple: lint, test, maybe deploy. Speed matters more than comprehensiveness.
 
-In large teams, CI becomes a coordination mechanism. Multiple developers pushing to many branches simultaneously means the pipeline must handle parallelism, flaky tests, dependency caching, and staged rollouts. CD in large teams typically involves canary deployments, feature flags, and rollback mechanisms that do not exist in small projects.
+In large teams, CI becomes a coordination mechanism. Multiple developers pushing to many branches simultaneously means the pipeline must handle parallelism, flaky tests, dependency caching, and staged rollout. CD in large teams typically involves canary deployments, feature flags, and rollback mechanisms that do not exist in small projects.
 
 This repo pipeline is appropriately minimal. A production macOS app like Focus Bear would likely have a significantly more complex pipeline: Swift compilation, XCTest suite, UI tests, code signing, notarization, and staged distribution via Sparkle.
