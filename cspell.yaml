@@ -15,8 +15,11 @@ words:
     - sannidhya
     - focusbear
     - unstash
+    - oneline
     - soduto
     - dorny
+    - mkcd
+    - gacp
 
 ignorePaths:
     - node_modules/**
