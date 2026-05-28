@@ -1,0 +1,47 @@
+name: Markdown Lint and Spell Check
+
+on:
+    push:
+        branches: [main, ci/**]
+    pull_request:
+        branches: [main]
+
+jobs:
+    markdown-lint:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v6
+              with:
+                  persist-credentials: true
+
+            - name: Check for changed markdown files
+              id: changes
+              uses: dorny/paths-filter@v4
+              with:
+                  list-files: "json"
+                  filters: |
+                      md:
+                          - added|modified: '**/*.md'
+
+            - name: Run markdownlint
+              if: steps.changes.outputs.md == 'true'
+              uses: DavidAnson/markdownlint-cli2-action@v23
+              with:
+                  config: .markdownlint.yaml
+                  globs: ${{ steps.changes.outputs.md_files }}
+                  separator: ","
+                  fix: true
+
+            - name: Commit and push changes
+              if: github.event_name == 'pull_request' && steps.changes.outputs.md == 'true'
+              uses: planetscale/ghcommit-action@v0.2.20
+              with:
+                  commit_message: "style(markdown): autofix markdown formatting [skip ci]"
+                  repo: ${{ github.repository }}
+                  branch: ${{ github.head_ref }}
+                  file_pattern: "**/*.md"
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
