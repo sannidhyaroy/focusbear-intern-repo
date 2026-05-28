@@ -31,9 +31,29 @@ jobs:
                       md:
                           - added|modified: '**/*.md'
 
+            - name: Parse changed markdown files
+              id: parse
+              if: steps.changes.outputs.md == 'true'
+              run: |
+                  cat << 'JSONEOF' > /tmp/input.json
+                  ${{ steps.changes.outputs.md_files }}
+                  JSONEOF
+                  python3 -c "
+                  import json
+                  with open('/tmp/input.json') as f:
+                      files = json.load(f)
+                  print('\n'.join(files))
+                  " > /tmp/md_files.txt
+                  {
+                    echo 'files<<EOF'
+                    cat /tmp/md_files.txt
+                    echo EOF
+                  } >> $GITHUB_OUTPUT
+
             - name: Run markdownlint with autofix
+              id: markdownlint-autofix
               if: |
-                  steps.changes.outputs.md == 'true' && (
+                  steps.parse.outcome == 'success' && (
                     github.event_name == 'push' || (
                       github.event_name == 'pull_request' &&
                       github.event.pull_request.head.repo.full_name == github.repository
@@ -42,35 +62,43 @@ jobs:
               uses: DavidAnson/markdownlint-cli2-action@v23
               with:
                   config: .markdownlint.yaml
-                  globs: ${{ steps.changes.outputs.md_files }}
-                  separator: ","
+                  globs: |
+                      ${{ steps.parse.outputs.files }}
                   fix: true
 
             - name: Run markdownlint checks
+              id: markdownlint-checks
               if: |
-                  steps.changes.outputs.md == 'true' && (
+                  steps.parse.outcome == 'success' && (
                     github.event_name == 'pull_request' &&
                     github.event.pull_request.head.repo.full_name != github.repository
                   )
               uses: DavidAnson/markdownlint-cli2-action@v23
               with:
                   config: .markdownlint.yaml
-                  globs: ${{ steps.changes.outputs.md_files }}
-                  separator: ","
+                  globs: |
+                      ${{ steps.parse.outputs.files }}
                   fix: false
 
             - name: Run cspell
               if: |
                   !cancelled() &&
-                  steps.changes.outputs.md == 'true'
+                  steps.parse.outcome == 'success' &&
+                  (
+                    steps.markdownlint-autofix.outcome == 'success' ||
+                    steps.markdownlint-autofix.outcome == 'failure' ||
+                    steps.markdownlint-checks.outcome == 'success' ||
+                    steps.markdownlint-checks.outcome == 'failure'
+                  )
               uses: streetsidesoftware/cspell-action@v8
               with:
-                  files: ${{ steps.changes.outputs.md_files }}
+                  files: |
+                      ${{ steps.parse.outputs.files }}
+                  incremental_files_only: false
 
             - name: Commit and push changes
               if: |
-                  success() &&
-                  steps.changes.outputs.md == 'true' && (
+                  success() && (
                     github.event_name == 'push' || (
                       github.event_name == 'pull_request' &&
                       github.event.pull_request.head.repo.full_name == github.repository
