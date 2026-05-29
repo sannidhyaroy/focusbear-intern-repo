@@ -35,8 +35,10 @@ words:
     - pipx
     - pyenv
     - venv
+    - tmutil
     - xcodegen
     - xcodeproj
+    - diskutil
     - scrcpy
     - swiftlint
     - pinentry
@@ -67,6 +69,7 @@ words:
     - unvetted
 
     # Acronyms
+    - APFS
     - AEST
     - TOTP
 
