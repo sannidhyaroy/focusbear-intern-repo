@@ -1,5 +1,5 @@
 version: "0.2"
-language: en-US
+language: en-US,en-GB
 
 dictionaries:
     - en-US
@@ -10,16 +10,71 @@ dictionaries:
     - filetypes
 
 words:
+    # Project & User Handles
     - sannidhyaroy
-    - toggleable
     - sannidhya
+    - sannidhyz
     - focusbear
+    - manish
+    - doshi
+    - caci
+    - wehmeier
+    - zablotsky
+    - chaelin
+
+    # Custom Tech / Tooling Terms
+    - toggleable
     - unstash
     - oneline
     - soduto
     - dorny
     - mkcd
     - gacp
+    - autosquash
+    - rerere
+    - pipx
+    - pyenv
+    - venv
+    - xcodegen
+    - xcodeproj
+    - scrcpy
+    - swiftlint
+    - pinentry
+    - smartmontools
+    - maccy
+    - dnslookup
+    - bitwarden
+    - vaultwarden
+    - yubi
+    - addy
+    - tiimo
+    - routinery
+    - wayfinder
+    - adderall
+    - frecent
+    - javache
+    - rubennorte
+    - ephr
+
+    # Uncommon / Accepted Words
+    - standups
+    - touchpoints
+    - stringly
+    - gamify
+    - captology
+    - unbypassable
+    - deprioritized
+    - unvetted
+
+    # Acronyms
+    - AEST
+    - TOTP
+
+languageSettings:
+    - languageId: markdown
+      ignoreRegExpList:
+          - MarkdownCodeBlock
+      allowCompoundWords: true
 
 ignorePaths:
     - node_modules/**
