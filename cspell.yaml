@@ -30,6 +30,8 @@ words:
     - dorny
     - mkcd
     - gacp
+    - deinitialize
+    - deinitializer
     - autosquash
     - rerere
     - pipx
