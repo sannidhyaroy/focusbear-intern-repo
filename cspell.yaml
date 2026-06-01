@@ -39,6 +39,7 @@ words:
     - xcodegen
     - xcodeproj
     - diskutil
+    - automator
     - scrcpy
     - swiftlint
     - pinentry
