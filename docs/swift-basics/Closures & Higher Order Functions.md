@@ -14,22 +14,22 @@ Closures are self-contained blocks of functionality that can be stored in variab
 
 Swift allows progressively shorter closure syntax. The full form specifies parameter types, return type, and uses the `in` keyword. Shorthand argument names (`$0`, `$1`) eliminate the need to name parameters. Trailing closure syntax moves the closure outside the parentheses when it is the last argument.
 
-### map
+### `map`
 
 Transforms each element of a collection using a closure, returning a new collection of the same length with the transformed values.
 
-### filter
+### `filter`
 
 Returns a new collection containing only the elements for which the closure returns true.
 
-### reduce
+### `reduce`
 
 Combines all elements of a collection into a single value using a closure, starting from an initial value.
 
-### compactMap
+### `compactMap`
 
 Like `map`, but automatically unwraps optionals and removes nil results. Useful for transformations that may fail, like parsing strings to integers.
 
-### @escaping
+### `@escaping`
 
 A closure marked `@escaping` outlives the function call it was passed to. This is required when storing a closure as a property or dispatching it asynchronously. The compiler enforces this distinction.
