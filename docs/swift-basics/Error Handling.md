@@ -22,7 +22,7 @@ The primary mechanism for handling errors. Multiple `catch` clauses can match sp
 
 Converts a throwing expression to an optional. Errors are silently discarded and the result is nil on failure. Use when failure details do not matter.
 
-### try!
+### try
 
 Force-tries a throwing expression and crashes if it throws. Only appropriate when the call is provably infallible, for example, compiling a regex from a string literal that is known to be valid.
 
