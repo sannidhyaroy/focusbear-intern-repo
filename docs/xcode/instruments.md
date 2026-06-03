@@ -37,9 +37,11 @@ Records all network requests made by the app, including URL, response code, byte
 Instruments was run on a [macOS app](https://github.com/sannidhyaroy/Soduto) using the Time Profiler and Allocations instruments.
 
 ### Time Profiler Findings
+
 The heaviest CPU consumer was the main thread, accounting for 53.1% of total CPU time (894ms of 1.68s). The call tree traced through `NSApplication`'s event loop into Preferences initialization (`specialized static Pref...`, 206ms), triggered by the first access of a lazy-initialized view controller. Two hangs were recorded by the Hangs instrument, visible as amber markers in the timeline, corresponding to the main thread being blocked during this initialization and a subsequent device connection event.
 
 ### Allocations Findings
+
 Heap usage stabilized at approximately 12.46 MiB of persistent heap allocations across 80,258 objects, with a total of 149.74 MiB allocated over the 33-second session (including transient objects). Anonymous VM brought the total persistent footprint to 29.32 MiB. No unexpected growth was observed, the allocation graph shows activity during app initialization followed by a flat line, indicating normal behavior with no memory leaks or runaway allocations during the observation period.
 
 ## Screenshots
