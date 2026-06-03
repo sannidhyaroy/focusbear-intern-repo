@@ -30,6 +30,7 @@ words:
     - dorny
     - mkcd
     - gacp
+    - lldb
     - deinitialize
     - deinitializer
     - autosquash
