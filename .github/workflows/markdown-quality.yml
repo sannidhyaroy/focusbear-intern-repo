@@ -109,7 +109,7 @@ jobs:
                   )
               uses: planetscale/ghcommit-action@v0.2.20
               with:
-                  commit_message: "style(markdown): autofix markdown formatting [skip ci]"
+                  commit_message: "style(markdown): autofix markdown formatting"
                   repo: ${{ github.repository }}
                   branch: ${{ github.head_ref || github.ref_name }}
                   file_pattern: "**/*.md"
