@@ -10,10 +10,11 @@ dictionaries:
     - filetypes
 
 words:
-    # Project & User Handles
+    # Projects, User Handles and Names
     - sannidhyaroy
     - sannidhya
     - sannidhyz
+    - biolume
     - focusbear
     - manish
     - doshi
@@ -42,6 +43,7 @@ words:
     - venv
     - Onone
     - tmutil
+    - tccutil
     - uniqued
     - xcodegen
     - xcodeproj
