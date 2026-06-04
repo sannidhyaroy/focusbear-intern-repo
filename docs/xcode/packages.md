@@ -4,6 +4,10 @@
 
 Swift Package Manager is Apple's first-party dependency manager, integrated directly into Xcode. Packages are added via `File > Add Package Dependencies`, resolved automatically, and linked to specific targets. No separate tooling, no lockfile management, no Ruby environment, everything is handled natively by Xcode and the Swift compiler.
 
+## Project
+
+The package was added to the existing [`UnitTesting`](../../assets/UnitTesting) project from the previous issue, which already contained the form validator logic and Swift Testing unit tests.
+
 ## Added Package: `swift-algorithms`
 
 [swift-algorithms](https://github.com/apple/swift-algorithms) is an open-source package by Apple that extends the Swift standard library with sequence and collection algorithms not available natively, like `product(_:_:)` for cartesian products, `chunked(by:)`, `uniqued()`, and `windows(ofCount:)`.
