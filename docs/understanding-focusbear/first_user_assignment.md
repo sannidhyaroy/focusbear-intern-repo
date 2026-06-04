@@ -19,19 +19,19 @@ hierarchy, and pre-selected sensible defaults. This is one of the strongest scre
 the onboarding.
 
 **Screenshot:**
-![Goal Selection](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.54.38 AM.png)
+![Goal Selection](../../assets/images/Screenshot%202026-05-19%20at%2010.54.38 AM.png)
 
 ### Privacy Reassurances Are Well Placed
 The privacy reassurance screens, both the general privacy screen during account creation and the AI blocking screen do a good job of proactively addressing concerns before users have to ask. The three-card layout is clear and scannable.
 
 **Screenshots:**
-![Privacy](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.53.07 AM.png)
-![AI Privacy](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.55.48 AM.png)
+![Privacy](../../assets/images/Screenshot%202026-05-19%20at%2010.53.07 AM.png)
+![AI Privacy](../../assets/images/Screenshot%202026-05-19%20at%2010.55.48 AM.png)
 
 ### Profession-Based Website Suggestions
 Asking for the user's profession and then suggesting relevant work websites to whitelist is a genuinely smart UX decision. It reduces setup friction significantly.
 
-**Screenshot:** ![Distraction Blocking Suggestions](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.56.40 AM.png)
+**Screenshot:** ![Distraction Blocking Suggestions](../../assets/images/Screenshot%202026-05-19%20at%2010.56.40 AM.png)
 
 ### Bear Speech Bubbles Explaining Permissions
 Each macOS permission request has a bear speech bubble explaining why it is needed.
@@ -39,9 +39,9 @@ Permissions dialogs are inherently anxiety-inducing, and the friendly contextual
 explanation helps considerably.
 
 **Screenshots:**
-![Grant System Event Permissions](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.58.53 AM.png)
-![Grant Accessibility Permissions](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.59.13 AM.png)
-![Grant Browser Permissions](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.59.26 AM.png)
+![Grant System Event Permissions](../../assets/images/Screenshot%202026-05-19%20at%2010.58.53 AM.png)
+![Grant Accessibility Permissions](../../assets/images/Screenshot%202026-05-19%20at%2010.59.13 AM.png)
+![Grant Browser Permissions](../../assets/images/Screenshot%202026-05-19%20at%2010.59.26 AM.png)
 
 ---
 
@@ -74,8 +74,8 @@ On the second screen, the bear introduces itself as having ADHD and getting dist
 This breaks the narrative rhythm and means users who select this option miss the emotional hook that frames the product's purpose. Even users without ADHD may benefit from Focus Bear, and losing the value proposition framing for this group is a missed opportunity.
 
 **Screenshots:**
-![Bear ADHD](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.52.24 AM.png)
-![Team up with Bear](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.52.50 AM.png)
+![Bear ADHD](../../assets/images/Screenshot%202026-05-19%20at%2010.52.24 AM.png)
+![Team up with Bear](../../assets/images/Screenshot%202026-05-19%20at%2010.52.50 AM.png)
 
 ---
 
@@ -99,7 +99,7 @@ This directly causes the most common new user mistake like I did: adding "work" 
 
 On the "Choose apps to block" screen, the placeholder text reads "Tap on the + button to block a new app." This is mobile language. On macOS, users click, they do not tap. This could be taken from the mobile codebase that was never updated for the desktop version.
 
-**Screenshot:** ![Choose apps to block](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.57.15 AM.png)
+**Screenshot:** ![Choose apps to block](../../assets/images/Screenshot%202026-05-19%20at%2010.57.15 AM.png)
 
 ---
 
@@ -124,7 +124,7 @@ checks the agreement checkbox. There is no visual indicator or tooltip explainin
 Continue is disabled. A user who taps Continue and nothing happens has no immediate
 feedback about what action is required.
 
-![Privacy Screen](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.53.07 AM.png)
+![Privacy Screen](../../assets/images/Screenshot%202026-05-19%20at%2010.53.07 AM.png)
 
 ---
 
@@ -136,7 +136,7 @@ Preferences to System Settings in macOS Ventura (13) and later. Users on modern 
 versions will not find "System Preferences" and may get confused.
 
 **Screenshots:**
-![Grant Accessibility Permissions](../../assets/onboarding/Screenshot%202026-05-19%20at%2010.59.13 AM.png)
+![Grant Accessibility Permissions](../../assets/images/Screenshot%202026-05-19%20at%2010.59.13 AM.png)
 
 --- 
 

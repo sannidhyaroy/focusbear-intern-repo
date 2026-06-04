@@ -46,7 +46,7 @@ The underlying philosophy is that a commit is not just a save point, it is a uni
 
 ## Practical Task
 
-![TASK#42](../../assets/onboarding/Screenshot%202026-05-22%20at%209.16.46 AM.png)
+![TASK#42](../../assets/images/Screenshot%202026-05-22%20at%209.16.46 AM.png)
 
 # Branching & Team Collaboration
 
@@ -84,7 +84,7 @@ The alternative, where everyone working directly on `main` does not eliminate co
 
 ## Practical Task
 
-![TASK#43](../../assets/onboarding/Screenshot%202026-05-22%20at%2010.21.21 AM.png)
+![TASK#43](../../assets/images/Screenshot%202026-05-22%20at%2010.21.21 AM.png)
 
 # Writing Meaningful Commit Messages
 
@@ -139,9 +139,9 @@ A commit message cannot be retroactively improved once it is in shared history w
 
 ## Real-World Example: React's Commit History
 
-| **React Commit History** |
-| :----------------------: |
-| ![React Commits](../../assets/onboarding/React%20Commits.jpeg) |
+|                            **React Commit History**                            |
+| :----------------------------------------------------------------------------: |
+|           ![React Commits](../../assets/images/React%20Commits.jpeg)           |
 | *React's commit history as a reference to analyze good vs bad commit messages* |
 
 React's commit history is a good real-world reference. The Facebook/Meta team uses a `[scope] description` convention rather than Conventional Commits strictly, but the commits are consistent, human-readable, and machine-parseable enough for their tooling.
@@ -170,7 +170,7 @@ clear, consistently structured, and parseable by both humans and CI/CD pipelines
 
 ## Practical Task
 
-![TASK#46](../../assets/onboarding/Screenshot%202026-05-22%20at%201.24.42 PM.png)
+![TASK#46](../../assets/images/Screenshot%202026-05-22%20at%201.24.42 PM.png)
 
 
 # Merge Conflicts & Conflict Resolution
@@ -201,7 +201,7 @@ Everything between `<<<<<<< HEAD` and `=======` is what the current branch had. 
 
 ## How I Reproduced and Resolved the Conflict
 
-![TASK#60](../../assets/onboarding/Screenshot%202026-05-25%20at%2011.18.57 AM.png)
+![TASK#60](../../assets/images/Screenshot%202026-05-25%20at%2011.18.57 AM.png)
 
 ## What I Learned
 
@@ -321,7 +321,7 @@ The limitation of bisect is that it requires a reproducible test condition. If y
 
 ## Practical Task
 
-![TASK#45](../../assets/onboarding/Screenshot%202026-05-26%20at%201.32.32 AM.png)
+![TASK#45](../../assets/images/Screenshot%202026-05-26%20at%201.32.32 AM.png)
 
 # Advanced Git Commands & When to Use Them
 
@@ -448,4 +448,4 @@ The `-x` flag on `git cherry-pick` was also a useful reminder. It appends the or
 
 ## Practical Task
 
-![TASK#44](../../assets/onboarding/Screenshot%202026-05-26%20at%209.56.58 AM.png)
+![TASK#44](../../assets/images/Screenshot%202026-05-26%20at%209.56.58 AM.png)

@@ -19,7 +19,7 @@ Modified `ContentView.swift` to display a personalized greeting and the current 
 
 ### Screenshot
 
-|                                           **Sample App**                                           |
-| :------------------------------------------------------------------------------------------------: |
-| ![Sample App Xcode Project](../../assets/onboarding/Screenshot%202026-06-03%20at%201.45.35 PM.png) |
-|              *Xcode Interface showing `ContentView.swift` and the Xcode Live Preview*              |
+|                                         **Sample App**                                         |
+| :--------------------------------------------------------------------------------------------: |
+| ![Sample App Xcode Project](../../assets/images/Screenshot%202026-06-03%20at%201.45.35 PM.png) |
+|            *Xcode Interface showing `ContentView.swift` and the Xcode Live Preview*            |

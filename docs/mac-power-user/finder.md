@@ -45,7 +45,7 @@
 
 ## Screenshot
 
-|                                   **Hidden Files in Finder**                                   |
-| :--------------------------------------------------------------------------------------------: |
-| ![Hidden Files Enabled](../../assets/onboarding/Screenshot%202026-05-29%20at%202.11.35 AM.png) |
-|           *Hidden files visible in home directory after pressing `Cmd + Shift + .`*            |
+|                                 **Hidden Files in Finder**                                 |
+| :----------------------------------------------------------------------------------------: |
+| ![Hidden Files Enabled](../../assets/images/Screenshot%202026-05-29%20at%202.11.35 AM.png) |
+|         *Hidden files visible in home directory after pressing `Cmd + Shift + .`*          |

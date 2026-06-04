@@ -54,7 +54,7 @@
 
 ## Practical Task
 
-|                                         **Screenshot**                                          |
-| :---------------------------------------------------------------------------------------------: |
-| ![Homebrew Package List](../../assets/onboarding/Screenshot%202026-05-29%20at%209.44.51 AM.png) |
-|                       *`brew list` showing installed formulae and casks*                        |
+|                                       **Screenshot**                                        |
+| :-----------------------------------------------------------------------------------------: |
+| ![Homebrew Package List](../../assets/images/Screenshot%202026-05-29%20at%209.44.51 AM.png) |
+|                     *`brew list` showing installed formulae and casks*                      |

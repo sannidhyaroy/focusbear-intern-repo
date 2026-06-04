@@ -46,7 +46,7 @@ Heap usage stabilized at approximately 12.46 MiB of persistent heap allocations 
 
 ## Screenshots
 
-|                                     *Time Profiler*                                     |                                     *Allocations*                                     |
-| :-------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------: |
-| ![Time Profiler](../../assets/onboarding/Screenshot%202026-06-03%20at%204.08.51 PM.png) | ![Allocations](../../assets/onboarding/Screenshot%202026-06-03%20at%204.27.33 PM.png) |
-|        *Instruments app profiling a macOS app using the Time Profiler template*         |        *Instruments app profiling a macOS app using the Allocations template*         |
+|                                   *Time Profiler*                                   |                                   *Allocations*                                   |
+| :---------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------: |
+| ![Time Profiler](../../assets/images/Screenshot%202026-06-03%20at%204.08.51 PM.png) | ![Allocations](../../assets/images/Screenshot%202026-06-03%20at%204.27.33 PM.png) |
+|      *Instruments app profiling a macOS app using the Time Profiler template*       |      *Instruments app profiling a macOS app using the Allocations template*       |

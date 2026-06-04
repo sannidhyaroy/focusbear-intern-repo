@@ -60,7 +60,7 @@ The `ValidationMatrixTests` suite uses Swift Testing's `@Test(arguments:)` combi
 
 ## Screenshot
 
-|                                    **Unit Testing Report**                                    |
-| :-------------------------------------------------------------------------------------------: |
-| ![Unit Testing Report](../../assets/onboarding/Screenshot%202026-06-04%20at%201.50.20 PM.png) |
-|                    *9 tests passed with test plan across two test targets*                    |
+|                                  **Unit Testing Report**                                  |
+| :---------------------------------------------------------------------------------------: |
+| ![Unit Testing Report](../../assets/images/Screenshot%202026-06-04%20at%201.50.20 PM.png) |
+|                  *9 tests passed with test plan across two test targets*                  |

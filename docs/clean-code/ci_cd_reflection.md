@@ -42,10 +42,10 @@ The `skip` conditions handle merge and rebase contexts where linting would be di
 
 Even though I ditched the native shell script in the repo, I kept the documentation honest about the attempt, so both approaches are visible, and the reason for the switch is documented. The shell script is not wrong, it just has a limitation that matters for how I work.
 
-| **Native shell script** | **Lefthook** |
-| :---------------------: | :----------: |
-| ![Native hooks](../../assets/onboarding/Screenshot%202026-05-28%20at%204.55.42 PM.png) | ![Lefthook](../../assets/onboarding/Screenshot%202026-05-28%20at%206.54.26 PM.png) |
-| *Zero dependencies, one setup command, complex edge cases should be manually handled* | *Lefthook as a pre-commit hook in action* |
+|                                **Native shell script**                                |                                  **Lefthook**                                  |
+| :-----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------: |
+|  ![Native hooks](../../assets/images/Screenshot%202026-05-28%20at%204.55.42 PM.png)   | ![Lefthook](../../assets/images/Screenshot%202026-05-28%20at%206.54.26 PM.png) |
+| *Zero dependencies, one setup command, complex edge cases should be manually handled* |                   *Lefthook as a pre-commit hook in action*                    |
 
 ## How Does Automating Style Checks Improve Project Quality?
 

@@ -42,7 +42,7 @@ The Debug Navigator shows live CPU, memory, disk, and network usage graphs durin
 
 ## Screenshots
 
-|                                    **Breakpoint**                                     |                                       **Variables View**                                        |                                    **LLDB Usage**                                    |
-| :-----------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
-| ![Breakpoints](../../assets/onboarding/Screenshot%202026-06-03%20at%202.24.22 PM.png) |    ![Debug Variables](../../assets/onboarding/Screenshot%202026-06-03%20at%202.33.03 PM.png)    | ![LLDB Usage](../../assets/onboarding/Screenshot%202026-06-03%20at%202.34.50 PM.png) |
-|                             *Breakpoint set in Line 1169*                             | *Xcode's Debug Area showing Variables View on the left side and LLDB Console on the right side* |                   *LLDB Console showing `p self` and `bt` output*                    |
+|                                  **Breakpoint**                                   |                                       **Variables View**                                        |                                  **LLDB Usage**                                  |
+| :-------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: |
+| ![Breakpoints](../../assets/images/Screenshot%202026-06-03%20at%202.24.22 PM.png) |      ![Debug Variables](../../assets/images/Screenshot%202026-06-03%20at%202.33.03 PM.png)      | ![LLDB Usage](../../assets/images/Screenshot%202026-06-03%20at%202.34.50 PM.png) |
+|                           *Breakpoint set in Line 1169*                           | *Xcode's Debug Area showing Variables View on the left side and LLDB Console on the right side* |                 *LLDB Console showing `p self` and `bt` output*                  |

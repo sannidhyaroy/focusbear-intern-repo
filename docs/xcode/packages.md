@@ -38,17 +38,17 @@ Swift Package Manager (SPM) is integrated into Xcode with no additional tooling 
 
 ## Screenshots
 
-|                                    Adding the package                                     |                                  Fetching and verifying                                  |
-| :---------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: |
-| ![Package Search](../../assets/onboarding/Screenshot%202026-06-04%20at%2012.17.51 PM.png) | ![Package Fetch](../../assets/onboarding/Screenshot%202026-06-04%20at%2012.18.15 PM.png) |
-|                            *`swift-algorithms` package search*                            |                     *Fetching and verifying the package from source*                     |
+|                                  Adding the package                                   |                                Fetching and verifying                                |
+| :-----------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
+| ![Package Search](../../assets/images/Screenshot%202026-06-04%20at%2012.17.51 PM.png) | ![Package Fetch](../../assets/images/Screenshot%202026-06-04%20at%2012.18.15 PM.png) |
+|                          *`swift-algorithms` package search*                          |                   *Fetching and verifying the package from source*                   |
 
-|                                      Target selection                                       |                                      Package dependencies                                      |
-| :-----------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------: |
-| ![Target Selection](../../assets/onboarding/Screenshot%202026-06-04%20at%2012.20.05 PM.png) | ![Package Dependencies](../../assets/onboarding/Screenshot%202026-06-04%20at%201.40.32 PM.png) |
-|                            *Selecting Target to add the package*                            |                              *Project Package Dependencies list*                               |
+|                                    Target selection                                     |                                    Package dependencies                                    |
+| :-------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------: |
+| ![Target Selection](../../assets/images/Screenshot%202026-06-04%20at%2012.20.05 PM.png) | ![Package Dependencies](../../assets/images/Screenshot%202026-06-04%20at%201.40.32 PM.png) |
+|                          *Selecting Target to add the package*                          |                            *Project Package Dependencies list*                             |
 
-|                                      Test results                                      |
-| :------------------------------------------------------------------------------------: |
-| ![Test Results](../../assets/onboarding/Screenshot%202026-06-04%20at%201.50.20 PM.png) |
-|                *9 tests passed with test plan across two test targets*                 |
+|                                    Test results                                    |
+| :--------------------------------------------------------------------------------: |
+| ![Test Results](../../assets/images/Screenshot%202026-06-04%20at%201.50.20 PM.png) |
+|              *9 tests passed with test plan across two test targets*               |

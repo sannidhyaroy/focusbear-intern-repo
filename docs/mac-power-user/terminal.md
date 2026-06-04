@@ -24,4 +24,4 @@
 
 ## Terminal-Created Folder Structure
 
-![Terminal Folder Structure](../../assets/onboarding/Screenshot%202026-05-29%20at%202.42.45 AM.png)
+![Terminal Folder Structure](../../assets/images/Screenshot%202026-05-29%20at%202.42.45 AM.png)

@@ -217,17 +217,17 @@ is where the real value of linting lies.
 
 ### Practical Task
 
-| Setup & Installation | ESLint Violations (82 problems) |
-| :------------------: | :-----------------------------: |
-| ![ESLint Setup](../../assets/onboarding/Screenshot%202026-05-26%20at%203.09.14 PM.png) | ![ESLint Errors](../../assets/onboarding/CleanShot%202026-05-26%20at%2015.18.23@2x.png) |
+|                                Setup & Installation                                |                           ESLint Violations (82 problems)                           |
+| :--------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| ![ESLint Setup](../../assets/images/Screenshot%202026-05-26%20at%203.09.14 PM.png) | ![ESLint Errors](../../assets/images/CleanShot%202026-05-26%20at%2015.18.23@2x.png) |
 
-| Prettier Diff | ESLint Violations (27 problems) after Prettier |
-| :-----------: | :--------------------------------------------: |
-| ![ESLint Errors](../../assets/onboarding/CleanShot%202026-05-26%20at%2015.24.21@2x.png) | ![Prettier Diff](../../assets/onboarding/Screenshot%202026-05-26%20at%203.28.03 PM.png) |
+|                                    Prettier Diff                                    |                   ESLint Violations (27 problems) after Prettier                    |
+| :---------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| ![ESLint Errors](../../assets/images/CleanShot%202026-05-26%20at%2015.24.21@2x.png) | ![Prettier Diff](../../assets/images/Screenshot%202026-05-26%20at%203.28.03 PM.png) |
 
-| After ESLint `--fix` (8 problems) | Manual Fixes Diff | ESLint Results |
-| :-------------------------------: | :---------------: | :------------: |
-| ![After Fix](../../assets/onboarding/Screenshot%202026-05-26%20at%203.30.39 PM.png) | ![Manual Fixes](../../assets/onboarding/Screenshot%202026-05-26%20at%208.50.18 PM.png) | ![After Prettier](../../assets/onboarding/Screenshot%202026-05-26%20at%208.47.13 PM.png) | 
+|                        After ESLint `--fix` (8 problems)                        |                                 Manual Fixes Diff                                  |                                    ESLint Results                                    |
+| :-----------------------------------------------------------------------------: | :--------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: |
+| ![After Fix](../../assets/images/Screenshot%202026-05-26%20at%203.30.39 PM.png) | ![Manual Fixes](../../assets/images/Screenshot%202026-05-26%20at%208.50.18 PM.png) | ![After Prettier](../../assets/images/Screenshot%202026-05-26%20at%208.47.13 PM.png) |
 
 ## Naming Variables & Functions
 
