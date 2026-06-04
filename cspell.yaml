@@ -31,6 +31,7 @@ words:
     - mkcd
     - gacp
     - lldb
+    - xcrun
     - deinitialize
     - deinitializer
     - autosquash
