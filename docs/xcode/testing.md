@@ -40,6 +40,10 @@ Five Swift Testing unit tests cover the validator:
 - Age below 18 returns the correct error message
 - Exactly 18 passes validation (boundary condition)
 
+## Parameterized Tests
+
+The `ValidationMatrixTests` suite uses Swift Testing's `@Test(arguments:)` combined with `product(_:_:)` from `swift-algorithms` to generate 8 test cases from the cartesian product of all input combinations. Each combination runs as a separate named test case in the test navigator, making it easy to see exactly which input combination failed and why. This is covered in the [Frameworks and Packages](./packages.md) issue which adds `swift-algorithms` to the test target.
+
 ## Key Swift Testing APIs
 
 `#expect` verifies a condition and reports a detailed failure message if it is false, including the actual values on both sides of the comparison.
@@ -53,3 +57,10 @@ Five Swift Testing unit tests cover the validator:
 `XCTAssertNil` verifies a value is nil.
 `XCTAssertTrue` / `XCTAssertFalse` verifies a boolean condition.
 `XCTAssertThrowsError` verifies a throwing expression throws an error.
+
+## Screenshot
+
+|                                    **Unit Testing Report**                                    |
+| :-------------------------------------------------------------------------------------------: |
+| ![Unit Testing Report](../../assets/onboarding/Screenshot%202026-06-04%20at%201.50.20 PM.png) |
+|                    *9 tests passed with test plan across two test targets*                    |

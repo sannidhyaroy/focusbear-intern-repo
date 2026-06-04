@@ -6,6 +6,7 @@
 //
 
 import Testing
+import Algorithms
 @testable import UnitTesting
 
 @Suite("Validator Tests")
@@ -49,5 +50,31 @@ struct UnitTestingTests {
                                         email: "tsterling@nautilus.edu.sap",
                                         age: 18)
         #expect(result == nil)
+    }
+}
+
+@Suite("Validation Matrix")
+struct ValidationMatrixTests {
+
+    static let names = ["Tess", ""]
+    static let emails = ["tsterling@nautilus.edu.sap", "notanemail"]
+    static let ages = [25, 16]
+
+    static var combinations: [(String, String, Int)] {
+        product(product(names, emails), ages)
+            .map { (nameEmail, age) in
+                (nameEmail.0, nameEmail.1, age)
+            }
+    }
+
+    @Test("Validation matrix", arguments: combinations)
+    func validationMatrix(name: String, email: String, age: Int) {
+        let result = validateUserInputs(name: name, email: email, age: age)
+        let shouldBeValid = !name.isEmpty && email.contains("@") && age >= 18
+        if shouldBeValid {
+            #expect(result == nil)
+        } else {
+            #expect(result != nil)
+        }
     }
 }

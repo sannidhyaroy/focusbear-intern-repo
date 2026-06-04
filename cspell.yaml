@@ -40,6 +40,7 @@ words:
     - venv
     - Onone
     - tmutil
+    - uniqued
     - xcodegen
     - xcodeproj
     - diskutil
