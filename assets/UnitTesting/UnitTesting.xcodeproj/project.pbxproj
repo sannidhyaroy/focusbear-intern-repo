@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		31E50A5C2FD157AB00DFFC95 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 31E50A5B2FD157AB00DFFC95 /* Algorithms */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		31743B6B2FD13ACB0027BC08 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -59,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31E50A5C2FD157AB00DFFC95 /* Algorithms in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -135,6 +140,7 @@
 			);
 			name = UnitTestingTests;
 			packageProductDependencies = (
+				31E50A5B2FD157AB00DFFC95 /* Algorithms */,
 			);
 			productName = UnitTestingTests;
 			productReference = 31743B6A2FD13ACB0027BC08 /* UnitTestingTests.xctest */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 31743B542FD13AC80027BC08;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				31E50A5A2FD157AB00DFFC95 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 31743B5E2FD13AC80027BC08 /* Products */;
 			projectDirPath = "";
@@ -575,6 +584,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		31E50A5A2FD157AB00DFFC95 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		31E50A5B2FD157AB00DFFC95 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31E50A5A2FD157AB00DFFC95 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 31743B552FD13AC80027BC08 /* Project object */;
 }
