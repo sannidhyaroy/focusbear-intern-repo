@@ -64,7 +64,7 @@ The user-level database is readable without elevated privileges. The system-leve
 
 ## Resetting Permissions
 
-Permissions can be reset per-app via System Settings > Privacy and Security, or via the command line using `tccutil`:
+Permissions can be reset per-app via System Settings > Privacy and Security, or via the command line using [`tccutil`](./tccutil.md):
 
 ```bash
 # Reset all permissions for an app
