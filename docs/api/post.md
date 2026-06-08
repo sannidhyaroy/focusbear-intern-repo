@@ -39,7 +39,7 @@ struct SyncResponse: Codable {
 struct PostNetworkRequest {
     
     private static let session = URLSession.shared
-    private static let endpointURL = URL(string: "[https://api.internal/v1/analytics/sync](https://api.internal/v1/analytics/sync)")!
+    private static let endpointURL = URL(string: "https://api.saphira.gov/v1/analytics/sync")!
     
     /// Serializes a local analytics structure and transmits it via an asynchronous POST loop.
     static func transmitAnalyticsRecord(_ record: LogSyncPayload) async throws -> SyncResponse {

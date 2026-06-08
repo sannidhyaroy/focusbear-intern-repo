@@ -134,7 +134,7 @@ enum UserManagementRoute: APIEndpoint {
     case updateUserProfile(id: Int, encodedData: Data)
     
     var baseURL: URL {
-        return URL(string: "[https://api.saphira.gov/v1544](https://api.saphira.gov/v1544)")!
+        return URL(string: "https://api.saphira.gov/v1544")!
     }
     
     var path: String {

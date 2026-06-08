@@ -32,7 +32,7 @@ struct RepositoryMetric: Codable {
 struct ConcurrencyConverter {
     
     private static let session = URLSession.shared
-    private static let targetURL = URL(string: "[https://api.internal/v1/sync/status](https://api.internal/v1/sync/status)")!
+    private static let targetURL = URL(string: "https://api.saphira.gov/v1/sync/status")!
     
     // LEGACY PARADIGM: Completion Handler Callback Loop
     
