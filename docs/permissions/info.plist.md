@@ -1,5 +1,16 @@
 # `Info.plist` Permission Keys
 
+## Project Implementation
+
+The practical implementation of these configuration keys is demonstrated in the minimal sample application located at [`PermissionsExplorer`](../../assets/PermissionsExplorer).
+
+This project shows how `Info.plist` keys interact with `AVFoundation` API calls. When the configuration keys are present, the application compiles and executes normally, allowing the system to handle authorization status transitions seamlessly.
+
+|                                   Initial App State                                    |                                    Authorized State                                    |
+| :------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: |
+| ![Initial State](../../assets/images/Screenshot%202026-06-07%20at%204.53.38 PM%20.png) | ![Authorized State](../../assets/images/Screenshot%202026-06-07%20at%204.54.22 PM.png) |
+|       *App on first launch showing "Not Determined" status for both permissions*       |       *Both permissions successfully granted with buttons permanently disabled*        |
+
 ## Purpose Strings and the TCC Subsystem
 
 On macOS, declaring intent is decoupled from application logic. Before an application compiled with the Hardened Runtime or App Sandbox can invoke hardware APIs or monitor system-wide user events, it must specify its justification within its information property list (`Info.plist`). These string configurations—technically referred to as usage descriptions or purpose strings—are structural requirements monitored directly by the kernel-level TCC daemon.
